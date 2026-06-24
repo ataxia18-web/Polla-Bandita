@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Polla del Mundial · Entre Amigos</title>
+<title>Polla Mundial · La Bandita de Macul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -346,8 +346,8 @@ function render(){
 function headerHTML(showUser){
   return `<header class="top">
     <div class="crest">🏆</div>
-    <h1 class="anton">POLLA DEL <span class="gold">MUNDIAL</span></h1>
-    <div class="sub">Entre amigos</div>
+    <h1 class="anton">POLLA <span class="gold">MUNDIAL</span></h1>
+    <div class="sub">La Bandita de Macul</div>
     ${showUser?`<div style="margin-top:12px" class="row" >
       <div class="pill">${S.me?('⚽ '+esc(S.me.name)):'Invitado'}</div>
       ${S.isAdmin?'<div class="pill" style="color:var(--gold2);border-color:var(--line)">★ Admin</div>':''}
@@ -718,17 +718,97 @@ function adminFecha(){
         <input class="input" type="datetime-local" value="${m.kickoff||''}" oninput="setDraft(${i},'kickoff',this.value)">
       </div>
     </div>`).join('');
-  return `<div class="panel pad">
+  return importBlockHTML() + `
+    <div class="divider" style="margin:18px 0 12px"></div>
+    <div class="row" style="margin-bottom:10px"><b class="osw">…o agrega los partidos manualmente</b></div>
+    <div class="panel pad">
       <div class="field" style="margin-top:0">
         <label>Fecha de la jornada</label>
         <input class="input" type="date" id="af_date" value="${todayStr()}">
       </div>
-      <div class="note">Agrega los partidos del día. La hora de inicio define cuándo cierra cada apuesta (5 min antes).</div>
+      <div class="note">La hora de inicio define cuándo cierra cada apuesta (5 min antes).</div>
     </div>
     <div style="margin-top:12px">${rows||'<div class="panel pad empty mini">Sin partidos aún.</div>'}</div>
     <button class="btn ghost" style="margin-top:10px" onclick="addDraft()">+ Agregar partido</button>
     <button class="btn" style="margin-top:10px" onclick="publishDay()">Publicar fecha</button>`;
 }
+
+function importBlockHTML(){
+  let preview='';
+  if(S.importPreview){
+    const bd=S.importPreview.byDate, dates=Object.keys(bd).sort();
+    const list=dates.map(d=>`<div class="listrow"><b class="osw" style="flex:1">${prettyDate(d)}</b><span class="pill">${bd[d].length} partido${bd[d].length!==1?'s':''}</span></div>`).join('');
+    preview=`<div class="divider"></div>
+      <div class="mini" style="margin-bottom:6px">Detecté <b style="color:var(--text)">${S.importPreview.count}</b> partido(s) en ${dates.length} fecha(s)${S.importPreview.skipped?` · ${S.importPreview.skipped} línea(s) omitida(s)`:''}:</div>
+      ${list}
+      <div class="grid2" style="margin-top:12px">
+        <button class="btn" onclick="commitImport()">Importar todo</button>
+        <button class="btn ghost" onclick="cancelImport()">Cancelar</button>
+      </div>`;
+  }
+  return `<div class="panel pad">
+    <div class="row" style="justify-content:space-between"><b class="osw">⚡ Importar calendario</b><span class="pill open">rápido</span></div>
+    <p class="mini" style="margin:8px 0 6px">Pega varios partidos de una vez (uno por línea), con este formato:</p>
+    <div class="code">AAAA-MM-DD | HH:MM | Local | Visita</div>
+    <p class="mini" style="margin:8px 0 6px">Ejemplo:</p>
+    <div class="code">2026-06-25 | 18:00 | Chile | Croacia
+2026-06-25 | 21:00 | Brasil | Suiza
+2026-06-26 | 16:00 | España | Japón</div>
+    <textarea class="input" id="imp_text" rows="6" placeholder="Pega aquí el calendario…" style="margin-top:10px;font-family:ui-monospace,monospace;font-size:13px">${esc(S.importDraft||'')}</textarea>
+    <button class="btn blue" style="margin-top:10px" onclick="previewImport()">Previsualizar</button>
+    ${preview}
+  </div>`;
+}
+function parseCalendar(raw){
+  const byDate={}; let count=0, skipped=0;
+  (raw||'').split('\n').forEach(line=>{
+    line=line.trim();
+    if(!line || line[0]==='#') return;
+    let date=null,time='',home=null,away=null;
+    const parts=line.split('|').map(s=>s.trim());
+    if(parts.length>=4){ date=parts[0]; time=parts[1]; home=parts[2]; away=parts[3]; }
+    else if(parts.length===3){ const dt=parts[0].split(/\s+/); date=dt[0]; time=dt[1]||''; home=parts[1]; away=parts[2]; }
+    else {
+      const m=line.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})\s+(.+?)\s+(?:vs|v|x|-)\s+(.+)$/i);
+      if(m){ date=m[1]; time=m[2]; home=m[3].trim(); away=m[4].trim(); }
+    }
+    if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!home||!away){ skipped++; return; }
+    let kickoff=null;
+    if(time && /^\d{1,2}:\d{2}$/.test(time)){
+      const [y,mo,d]=date.split('-').map(Number); const [hh,mm]=time.split(':').map(Number);
+      kickoff=new Date(y,mo-1,d,hh,mm).toISOString();
+    }
+    (byDate[date]=byDate[date]||[]).push({id:uid(),home,away,kickoff});
+    count++;
+  });
+  return {byDate,count,skipped};
+}
+function previewImport(){
+  S.importDraft=$('imp_text').value;
+  const res=parseCalendar(S.importDraft);
+  if(res.count===0) toast('No reconocí ningún partido. Revisa el formato.');
+  S.importPreview=res; render();
+}
+function cancelImport(){ S.importPreview=null; render(); }
+async function commitImport(){
+  const res=S.importPreview; if(!res||!res.count) return;
+  let idx=(await sget(K.dayIndex))||[]; let added=0;
+  for(const date of Object.keys(res.byDate)){
+    const existing=await sget(K.day(date));
+    const matches=existing?existing.matches.slice():[];
+    for(const m of res.byDate[date]){
+      const dup=matches.some(x=>x.home===m.home&&x.away===m.away&&x.kickoff===m.kickoff);
+      if(!dup){ matches.push(m); added++; }
+    }
+    await sset(K.day(date),{date,matches,results:existing?.results||{}});
+    if(!idx.includes(date)) idx.push(date);
+  }
+  idx.sort(); await sset(K.dayIndex,idx); S.dayIndex=idx;
+  S.importPreview=null; S.importDraft='';
+  toast(`Importados ${added} partido(s) ✓`);
+  S.adminTab='resultados'; S.selDate=Object.keys(res.byDate).sort()[0]; S.day=await sget(K.day(S.selDate)); render();
+}
+
 function addDraft(){ S.draftMatches.push({id:uid(),home:'',away:'',kickoff:''}); render(); }
 function rmDraft(i){ S.draftMatches.splice(i,1); render(); }
 function setDraft(i,k,v){ S.draftMatches[i][k]=v; }
