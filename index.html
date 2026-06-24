@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Polla del Mundial · Entre Amigos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060b16; --bg2:#04070f;
+    --panel:#0e1726; --panel2:#13203a; --panel3:#172a47;
+    --line:rgba(232,181,48,.22);
+    --gold:#E8B530; --gold2:#FFD96B;
+    --blue:#2E9BE6; --green:#33B768; --red:#E2483A; --teal:#1f9b8e;
+    --text:#EAF1FB; --muted:#8FA0B8; --muted2:#5d6e87;
+    --shadow:0 18px 40px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 50% -8%, rgba(46,155,230,.16), transparent 60%),
+      radial-gradient(900px 500px at 50% 0%, rgba(232,181,48,.08), transparent 55%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    background-attachment:fixed;min-height:100vh;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 14px 110px}
+  .anton{font-family:'Anton',sans-serif;letter-spacing:.5px}
+  .osw{font-family:'Oswald',sans-serif}
+  h1,h2,h3{margin:0}
+  button{font-family:inherit;cursor:pointer;border:none}
+  input,select{font-family:inherit}
+
+  /* HEADER */
+  header.top{position:relative;text-align:center;padding:26px 10px 14px;overflow:hidden}
+  header.top::before{content:"";position:absolute;inset:-40% 0 auto 0;height:160px;
+    background:radial-gradient(closest-side, rgba(46,155,230,.28), transparent 70%);filter:blur(6px);pointer-events:none}
+  .crest{font-size:30px;line-height:1}
+  header.top h1{font-size:clamp(30px,9vw,46px);line-height:.92;color:#fff;
+    text-shadow:0 2px 0 #1b2a44,0 0 24px rgba(46,155,230,.35)}
+  header.top h1 .gold{color:var(--gold2);text-shadow:0 0 18px rgba(232,181,48,.5)}
+  .sub{font-family:'Oswald';text-transform:uppercase;letter-spacing:4px;color:var(--gold);
+    font-weight:600;font-size:12px;margin-top:7px;
+    display:inline-flex;align-items:center;gap:10px}
+  .sub::before,.sub::after{content:"";width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .sub::after{background:linear-gradient(90deg,var(--gold),transparent)}
+
+  /* PANELS */
+  .panel{background:linear-gradient(180deg,var(--panel),#0b1322);border:1px solid var(--line);
+    border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .panel.pad{padding:16px}
+  .ph{display:flex;align-items:center;gap:10px;padding:13px 16px;
+    background:linear-gradient(90deg,rgba(232,181,48,.10),transparent);
+    border-bottom:1px solid var(--line)}
+  .ph .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+  .ph h2{font-family:'Oswald';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:15px}
+  .ph .meta{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+
+  /* TABS */
+  nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:40;
+    background:linear-gradient(180deg,rgba(8,13,24,.6),rgba(4,7,15,.97));
+    backdrop-filter:blur(10px);border-top:1px solid var(--line);
+    display:flex;justify-content:center;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+  nav.tabs button{flex:1;max-width:120px;background:transparent;color:var(--muted);
+    border-radius:11px;padding:8px 4px;font-family:'Oswald';font-weight:600;font-size:11px;
+    text-transform:uppercase;letter-spacing:.8px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  nav.tabs button .ic{font-size:18px;line-height:1}
+  nav.tabs button.active{color:var(--gold2);background:rgba(232,181,48,.10)}
+
+  /* GENERIC */
+  .muted{color:var(--muted)}
+  .center{text-align:center}
+  .row{display:flex;align-items:center;gap:10px}
+  .btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1306;
+    font-family:'Oswald';font-weight:700;text-transform:uppercase;letter-spacing:1px;
+    padding:13px 18px;border-radius:12px;font-size:14px;width:100%;box-shadow:0 8px 20px rgba(232,181,48,.22)}
+  .btn:active{transform:translateY(1px)}
+  .btn.blue{background:linear-gradient(180deg,#56b4f0,var(--blue));color:#04121f;box-shadow:0 8px 20px rgba(46,155,230,.25)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text);box-shadow:none}
+  .btn.danger{background:linear-gradient(180deg,#ef6557,var(--red));color:#fff;box-shadow:none}
+  .btn.sm{padding:9px 12px;font-size:12px;width:auto}
+  .field{display:block;margin:12px 0}
+  .field label{display:block;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;
+    font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  .input{width:100%;background:#0a1322;border:1px solid var(--line);border-radius:11px;
+    color:var(--text);padding:12px 13px;font-size:16px;outline:none}
+  .input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,155,230,.18)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:'Oswald';font-weight:600;
+    font-size:11px;text-transform:uppercase;letter-spacing:.6px;padding:4px 9px;border-radius:999px;
+    border:1px solid var(--line);color:var(--muted)}
+  .pill.live{color:#ff7a6b;border-color:rgba(226,72,58,.5);background:rgba(226,72,58,.10)}
+  .pill.open{color:var(--green);border-color:rgba(51,183,104,.45);background:rgba(51,183,104,.10)}
+  .pill.lock{color:var(--muted);background:rgba(255,255,255,.04)}
+  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);
+    background:#11203a;border:1px solid var(--line);color:var(--text);padding:11px 16px;border-radius:12px;
+    font-weight:600;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+    transition:.25s;z-index:60;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* MATCH CARD */
+  .match{padding:14px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .match:last-child{border-bottom:none}
+  .match .mtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .match .ko{font-family:'Oswald';font-size:12px;color:var(--muted);font-weight:600}
+  .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+  .team{font-family:'Oswald';font-weight:600;font-size:15px}
+  .team.h{text-align:right}
+  .team.a{text-align:left}
+  .score-in{display:flex;align-items:center;justify-content:center;gap:8px}
+  .sin{width:54px;height:54px;text-align:center;font-size:22px;font-weight:800;
+    background:#0a1322;border:1.5px solid var(--line);border-radius:12px;color:#fff;
+    -moz-appearance:textfield}
+  .sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .sin:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,155,230,.18);outline:none}
+  .sin:disabled{opacity:.85;background:#0c1426}
+  .vs{font-family:'Oswald';color:var(--gold);font-weight:700;font-size:13px}
+  .real-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Oswald';font-weight:700;
+    font-size:13px;color:var(--gold2);background:rgba(232,181,48,.10);border:1px solid var(--line);
+    padding:5px 10px;border-radius:9px}
+
+  /* REVEAL TABLE */
+  .reveal{margin-top:10px;border-top:1px dashed rgba(255,255,255,.10);padding-top:10px}
+  .rline{display:flex;align-items:center;justify-content:space-between;padding:6px 2px;font-size:13px}
+  .rline .nm{font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;min-width:0}
+  .rline .nm small{color:var(--muted);font-weight:500}
+  .rpick{font-family:'Oswald';font-weight:700;color:var(--muted);margin-left:auto;margin-right:10px}
+  .chip{font-family:'Oswald';font-weight:700;font-size:12px;min-width:30px;text-align:center;
+    padding:3px 8px;border-radius:8px;border:1px solid transparent}
+  .chip.c0{color:var(--muted);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+  .chip.c1{color:#ffd98c;background:rgba(232,181,48,.10);border-color:rgba(232,181,48,.3)}
+  .chip.c2{color:#7fe0a3;background:rgba(51,183,104,.12);border-color:rgba(51,183,104,.35)}
+  .chip.c3{color:#7fd0f5;background:rgba(46,155,230,.12);border-color:rgba(46,155,230,.35)}
+  .chip.c5{color:#1a1306;background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:var(--gold)}
+
+  /* RANKING */
+  .rk{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .rk:last-child{border-bottom:none}
+  .rk .pos{font-family:'Anton';font-size:20px;width:30px;text-align:center;color:var(--muted)}
+  .rk.top1 .pos{color:var(--gold2)} .rk.top2 .pos{color:#cfd6e2} .rk.top3 .pos{color:#cd7f43}
+  .rk .nm{font-family:'Oswald';font-weight:600;font-size:16px;flex:1;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rk .pts{font-family:'Anton';font-size:22px;color:var(--gold2)}
+  .rk .pts small{font-family:'Oswald';font-size:11px;color:var(--muted);margin-left:3px;font-weight:600}
+  .rk.me{background:linear-gradient(90deg,rgba(46,155,230,.12),transparent)}
+
+  /* RULES */
+  .rule{display:flex;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .rule .badge{width:42px;height:42px;flex:none;border-radius:11px;display:grid;place-items:center;font-size:20px;
+    border:1px solid var(--line)}
+  .rule .badge.g{background:rgba(51,183,104,.12)} .rule .badge.b{background:rgba(46,155,230,.12)}
+  .rule .badge.y{background:rgba(232,181,48,.12)}
+  .rule h3{font-family:'Oswald';text-transform:uppercase;letter-spacing:.6px;font-size:14px}
+  .rule p{margin:3px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+  .rule .pts{margin-left:auto;font-family:'Anton';font-size:18px;align-self:center}
+  .rule .pts.g{color:var(--green)} .rule .pts.b{color:var(--blue)} .rule .pts.y{color:var(--gold2)}
+  .combos{width:100%;border-collapse:collapse;margin-top:4px}
+  .combos td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
+  .combos td:last-child{text-align:right;font-family:'Anton';font-size:16px;color:var(--gold2)}
+
+  /* ADMIN */
+  .seg{display:flex;gap:6px;margin:0 0 14px;background:#0a1322;border:1px solid var(--line);border-radius:12px;padding:5px}
+  .seg button{flex:1;background:transparent;color:var(--muted);font-family:'Oswald';font-weight:600;
+    font-size:12px;text-transform:uppercase;letter-spacing:.6px;padding:9px;border-radius:9px}
+  .seg button.active{background:rgba(232,181,48,.14);color:var(--gold2)}
+  .mini{font-size:12px;color:var(--muted)}
+  .divider{height:1px;background:var(--line);margin:14px 0}
+  .listrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  a.link{color:var(--blue);cursor:pointer;text-decoration:underline}
+  .empty{text-align:center;padding:34px 16px;color:var(--muted)}
+  .empty .big{font-size:34px;margin-bottom:8px}
+  .scroll-x{overflow-x:auto}
+  .note{background:rgba(46,155,230,.08);border:1px solid rgba(46,155,230,.25);border-radius:11px;
+    padding:10px 12px;font-size:12.5px;color:#bcd6ee;line-height:1.5}
+  .code{background:#0a1322;border:1px solid var(--line);border-radius:10px;padding:12px;
+    font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#cfe3f7;white-space:pre-wrap;overflow-x:auto;line-height:1.5}
+  ol.steps{padding-left:20px;margin:0} ol.steps li{margin:9px 0;line-height:1.5}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   POLLA DEL MUNDIAL — Firebase Firestore (sync real entre amigos)
+   ============================================================ */
+
+/* // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAM35Cw6oUIvgSYE_rO5eDy1AuYhp7NRVU",
+  authDomain: "polla-bandita.firebaseapp.com",
+  projectId: "polla-bandita",
+  storageBucket: "polla-bandita.firebasestorage.app",
+  messagingSenderId: "745101038960",
+  appId: "1:745101038960:web:b21277c93419516c682bb5"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+   (Firebase Console → Configuración del proyecto → Tus apps → Web → firebaseConfig) */
+const firebaseConfig = {
+  apiKey: "PEGA_AQUI_TU_API_KEY",
+  authDomain: "PEGA_AQUI.firebaseapp.com",
+  projectId: "PEGA_AQUI",
+  storageBucket: "PEGA_AQUI.appspot.com",
+  messagingSenderId: "PEGA_AQUI",
+  appId: "PEGA_AQUI"
+};
+/* ▲▲▲  No toques nada más abajo si no quieres  ▲▲▲ */
+
+let db = null;
+function firebaseReady(){ return firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('PEGA_AQUI')===-1; }
+
+const K = {
+  config:'config', standings:'standings', dayIndex:'dayindex',
+  day:d=>'day_'+d, pred:(d,p)=>'pred_'+d+'_'+p
+};
+const LOCK_MS = 5*60*1000; // apuestas cierran 5 min antes del inicio
+
+function refFor(key){
+  if(key==='config')   return db.collection('meta').doc('config');
+  if(key==='standings')return db.collection('meta').doc('standings');
+  if(key==='dayindex') return db.collection('meta').doc('dayindex');
+  if(key.indexOf('day_')===0)  return db.collection('days').doc(key.slice(4));
+  if(key.indexOf('pred_')===0) return db.collection('preds').doc(key.slice(5));
+  return null;
+}
+async function sget(key){
+  try{
+    const snap = await refFor(key).get();
+    if(!snap.exists) return null;
+    const data = snap.data();
+    if(key==='dayindex') return data.dates || [];
+    return data;
+  }catch(e){ console.error('get',key,e); return null; }
+}
+async function sset(key,val){
+  try{
+    const payload = (key==='dayindex') ? {dates: val} : val;
+    await refFor(key).set(payload);
+    return true;
+  }catch(e){ console.error('set',key,e); return false; }
+}
+async function sdel(key){ try{ await refFor(key).delete(); }catch(e){} }
+
+/* ---------- estado en memoria ---------- */
+let S = {
+  screen:'load',         // load | setup | login | app
+  tab:'partidos',        // partidos | ranking | reglas | admin
+  config:null,
+  me:null,               // {id,name}
+  isAdmin:false,
+  dayIndex:[],
+  selDate:null,
+  day:null,              // día seleccionado cargado
+  myPred:null,           // mi pronóstico del día seleccionado
+  allPreds:null,         // {playerId: pred}  (solo para reveal)
+  standings:null,
+  adminTab:'fecha',      // fecha | resultados | jugadores | ajustes
+  draftMatches:[],       // borrador al crear fecha
+};
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let toastTimer;
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function todayStr(){ const d=new Date(); return fmtDateKey(d); }
+function fmtDateKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function prettyDate(ds){
+  const [y,m,d]=ds.split('-').map(Number);
+  const dt=new Date(y,m-1,d);
+  const dias=['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+  const mes=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+  return dias[dt.getDay()]+' '+d+' '+mes[m-1];
+}
+function fmtKO(iso){
+  if(!iso) return '';
+  const d=new Date(iso);
+  return d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+/* ---------- puntaje (según las reglas de las imágenes) ---------- */
+// Acumulativo: +2 tendencia, +1 diferencia, +1 por cada marcador exacto. Máx 5.
+function scoreOne(real, pick){
+  if(!pick || pick.h==null || pick.a==null) return {p:0,bd:[],noBet:true};
+  if(!real || real.h==null || real.a==null) return {p:null,bd:[]};
+  let p=0; const bd=[];
+  const rs=Math.sign(real.h-real.a), ps=Math.sign(pick.h-pick.a);
+  if(rs===ps){ p+=2; bd.push('tendencia'); }
+  if((real.h-real.a)===(pick.h-pick.a)){ p+=1; bd.push('diferencia'); }
+  if(real.h===pick.h){ p+=1; bd.push('local'); }
+  if(real.a===pick.a){ p+=1; bd.push('visita'); }
+  return {p:Math.min(p,5),bd,noBet:false};
+}
+function chipClass(p){
+  if(p==null) return 'c0'; if(p>=5) return 'c5'; if(p>=3) return 'c3'; if(p>=2) return 'c2'; if(p>=1) return 'c1'; return 'c0';
+}
+
+/* ---------- lock helpers ---------- */
+function isLocked(m){ if(!m.kickoff) return false; return Date.now() >= (new Date(m.kickoff).getTime() - LOCK_MS); }
+function isStarted(m){ if(!m.kickoff) return false; return Date.now() >= new Date(m.kickoff).getTime(); }
+function lockCountdown(m){
+  if(!m.kickoff) return '';
+  const ms=(new Date(m.kickoff).getTime()-LOCK_MS)-Date.now();
+  if(ms<=0) return '';
+  const min=Math.floor(ms/60000), h=Math.floor(min/60);
+  if(h>=24) return 'Cierra en '+Math.floor(h/24)+'d';
+  if(h>0) return 'Cierra en '+h+'h '+(min%60)+'m';
+  return 'Cierra en '+min+'m';
+}
+
+/* ============================================================
+   ARRANQUE
+   ============================================================ */
+(async function boot(){
+  if(!firebaseReady()){ S.screen='needconfig'; render(); return; }
+  try{
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  }catch(e){ console.error(e); S.screen='needconfig'; render(); return; }
+  S.config = await sget(K.config);
+  if(!S.config){ S.screen='setup'; render(); }
+  else { S.screen='login'; render(); }
+})();
+
+/* ============================================================
+   RENDER PRINCIPAL
+   ============================================================ */
+function render(){
+  const app=$('app');
+  if(S.screen==='load'){ app.innerHTML=headerHTML()+'<div class="empty"><div class="big">⚽</div>Cargando…</div>'; return; }
+  if(S.screen==='needconfig'){ app.innerHTML=headerHTML()+needConfigHTML(); return; }
+  if(S.screen==='setup'){ app.innerHTML=headerHTML()+setupHTML(); bindSetup(); return; }
+  if(S.screen==='login'){ app.innerHTML=headerHTML()+loginHTML(); bindLogin(); return; }
+  // app
+  let body='';
+  if(S.tab==='partidos') body=partidosHTML();
+  else if(S.tab==='ranking') body=rankingHTML();
+  else if(S.tab==='reglas') body=reglasHTML();
+  else if(S.tab==='admin') body=adminHTML();
+  app.innerHTML = headerHTML(true) + body;
+  renderTabs();
+  bindByTab();
+}
+
+function headerHTML(showUser){
+  return `<header class="top">
+    <div class="crest">🏆</div>
+    <h1 class="anton">POLLA DEL <span class="gold">MUNDIAL</span></h1>
+    <div class="sub">Entre amigos</div>
+    ${showUser?`<div style="margin-top:12px" class="row" >
+      <div class="pill">${S.me?('⚽ '+esc(S.me.name)):'Invitado'}</div>
+      ${S.isAdmin?'<div class="pill" style="color:var(--gold2);border-color:var(--line)">★ Admin</div>':''}
+      <button class="btn ghost sm" style="margin-left:auto" onclick="logout()">Salir</button>
+    </div>`:''}
+  </header>`;
+}
+
+function renderTabs(){
+  let nav=document.querySelector('nav.tabs');
+  if(!nav){ nav=document.createElement('nav'); nav.className='tabs'; document.body.appendChild(nav); }
+  const tabs=[['partidos','📋','Partidos'],['ranking','🏅','Ranking'],['reglas','📖','Reglas']];
+  if(S.isAdmin) tabs.push(['admin','⚙️','Admin']);
+  nav.innerHTML=tabs.map(([id,ic,lb])=>
+    `<button class="${S.tab===id?'active':''}" onclick="go('${id}')"><span class="ic">${ic}</span>${lb}</button>`).join('');
+}
+
+function go(tab){ S.tab=tab; if(tab==='partidos'){ loadDayView(); } else if(tab==='ranking'){ loadStandings(); } else render(); }
+
+/* ============================================================
+   SETUP INICIAL (primera vez)
+   ============================================================ */
+function needConfigHTML(){
+  return `<div class="panel pad">
+    <div class="ph" style="margin:-16px -16px 14px">
+      <span class="dot"></span><h2>Falta conectar Firebase</h2></div>
+    <p class="mini" style="margin-top:0">Esta app guarda los datos en tu propio Firebase (gratis). Conéctalo una sola vez:</p>
+    <ol class="steps">
+      <li>Entra a <b>console.firebase.google.com</b> y crea un proyecto (gratis).</li>
+      <li>Menú <b>Compilación → Firestore Database → Crear base de datos</b> (modo de prueba).</li>
+      <li>En <b>⚙️ Configuración del proyecto → Tus apps</b>, agrega una app <b>Web (&lt;/&gt;)</b> y copia el bloque <code>firebaseConfig</code>.</li>
+      <li>Abre este archivo .html con un editor y <b>pega tu config</b> arriba, donde dice <code>PEGA_AQUI</code>.</li>
+      <li>En Firestore → pestaña <b>Reglas</b>, pega esto y publica:</li>
+    </ol>
+    <div class="code">rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /{doc=**} { allow read, write: if true; }
+  }
+}</div>
+    <div class="note" style="margin-top:12px">Sube el archivo a <b>GitHub Pages</b> (o ábrelo con un servidor local). Recarga y verás la pantalla de configuración de la polla.</div>
+  </div>`;
+}
+
+function setupHTML(){
+  return `<div class="panel pad">
+    <div class="note" style="margin-bottom:14px">Configuración inicial — la hace una sola persona (el organizador). Después todos entran con su nombre.</div>
+    <div class="field">
+      <label>PIN de administrador (4 dígitos)</label>
+      <input class="input" id="su_pin" inputmode="numeric" maxlength="6" placeholder="Ej: 2026">
+    </div>
+    <div class="field">
+      <label>Los 14 jugadores (un nombre por línea)</label>
+      <textarea class="input" id="su_players" rows="9" placeholder="Carlos&#10;Pedro&#10;Diego&#10;..."></textarea>
+    </div>
+    <button class="btn" onclick="doSetup()">Crear la polla</button>
+  </div>`;
+}
+function bindSetup(){}
+async function doSetup(){
+  const pin=$('su_pin').value.trim();
+  const names=$('su_players').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4 a 6 dígitos)');
+  if(names.length<2) return toast('Agrega al menos 2 jugadores');
+  if(names.length>14) return toast('Máximo 14 jugadores');
+  const players=names.map(n=>({id:uid(),name:n,pin:null}));
+  const cfg={adminPin:pin,players,createdAt:Date.now()};
+  const ok=await sset(K.config,cfg);
+  if(!ok) return toast('No se pudo guardar, reintenta');
+  await sset(K.dayIndex,[]);
+  await sset(K.standings,{perDay:{},totals:{}});
+  S.config=cfg; S.screen='login'; toast('¡Polla creada!'); render();
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function loginHTML(){
+  const opts=S.config.players.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  return `<div class="panel pad">
+    <div class="field">
+      <label>¿Quién eres?</label>
+      <select class="input" id="lg_player"><option value="">Elige tu nombre…</option>${opts}</select>
+    </div>
+    <div class="field">
+      <label>Tu PIN privado</label>
+      <input class="input" id="lg_pin" inputmode="numeric" maxlength="6" placeholder="4 a 6 dígitos">
+      <div class="mini" style="margin-top:6px">La primera vez que entras, tu PIN queda guardado y será solo tuyo.</div>
+    </div>
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <div class="divider"></div>
+    <button class="btn ghost" onclick="adminLogin()">Entrar como administrador</button>
+  </div>`;
+}
+function bindLogin(){}
+async function doLogin(){
+  S.config=await sget(K.config); // refresca por si otro cambió algo
+  const pid=$('lg_player').value, pin=$('lg_pin').value.trim();
+  if(!pid) return toast('Elige tu nombre');
+  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4 a 6 dígitos)');
+  const pl=S.config.players.find(p=>p.id===pid);
+  if(!pl) return toast('Jugador no encontrado');
+  if(!pl.pin){
+    pl.pin=pin; await sset(K.config,S.config); toast('PIN guardado, ¡bienvenido!');
+  } else if(pl.pin!==pin){
+    return toast('PIN incorrecto');
+  }
+  S.me={id:pl.id,name:pl.name}; S.isAdmin=false; S.screen='app'; S.tab='partidos';
+  await loadDayView(); render();
+}
+function adminLogin(){
+  const pin=prompt('PIN de administrador:');
+  if(pin==null) return;
+  if(pin.trim()!==S.config.adminPin) return toast('PIN de admin incorrecto');
+  S.isAdmin=true; S.me=null; S.screen='app'; S.tab='admin'; S.adminTab='fecha';
+  render();
+}
+function logout(){ S.me=null; S.isAdmin=false; S.screen='login'; const n=document.querySelector('nav.tabs'); if(n) n.remove(); render(); }
+
+/* ============================================================
+   CARGA DE DATOS DE UN DÍA
+   ============================================================ */
+async function loadDayView(){
+  S.dayIndex=(await sget(K.dayIndex))||[];
+  S.standings=(await sget(K.standings))||{perDay:{},totals:{}};
+  if(!S.selDate){
+    if(S.dayIndex.includes(todayStr())) S.selDate=todayStr();
+    else S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
+  }
+  if(S.selDate){
+    S.day=await sget(K.day(S.selDate));
+    S.myPred=S.me?await sget(K.pred(S.selDate,S.me.id)):null;
+    // cargar pronósticos de todos solo para reveal de partidos cerrados
+    S.allPreds={};
+    if(S.day){
+      for(const pl of S.config.players){
+        S.allPreds[pl.id]=await sget(K.pred(S.selDate,pl.id));
+      }
+    }
+  } else { S.day=null; S.myPred=null; S.allPreds=null; }
+  render();
+}
+async function loadStandings(){
+  S.standings=(await sget(K.standings))||{perDay:{},totals:{}};
+  S.config=await sget(K.config)||S.config;
+  render();
+}
+
+/* ============================================================
+   PESTAÑA PARTIDOS
+   ============================================================ */
+function dateNav(){
+  if(!S.dayIndex.length) return '';
+  const opts=S.dayIndex.map(d=>`<option value="${d}" ${d===S.selDate?'selected':''}>${prettyDate(d)}</option>`).join('');
+  return `<div class="row" style="margin:14px 0 12px">
+    <select class="input" style="flex:1" onchange="changeDay(this.value)">${opts}</select>
+    <button class="btn ghost sm" onclick="loadDayView()">↻</button>
+  </div>`;
+}
+async function changeDay(d){ S.selDate=d; await loadDayView(); }
+
+function partidosHTML(){
+  if(!S.dayIndex.length){
+    return `<div class="panel pad empty"><div class="big">📭</div>
+      Aún no hay fechas publicadas.<br><span class="mini">El administrador debe publicar los partidos del día.</span></div>`;
+  }
+  if(!S.day){ return dateNav()+`<div class="panel pad empty">No se pudo cargar la fecha.</div>`; }
+
+  const matches=S.day.matches||[];
+  const anyOpen=matches.some(m=>!isLocked(m));
+  let cards=matches.map((m,i)=>matchCard(m,i)).join('');
+  let saveBar = anyOpen ? `<button class="btn" style="margin-top:14px" onclick="savePicks()">Guardar mis pronósticos</button>
+    <div class="mini center" style="margin-top:8px">Solo se guardan los partidos abiertos. Cada uno cierra 5 min antes de empezar.</div>`
+    : `<div class="note" style="margin-top:14px">Todos los partidos de esta fecha están cerrados. Ya puedes ver los pronósticos de todos. 👀</div>`;
+
+  return dateNav()+`<div class="panel">
+      <div class="ph"><span class="dot"></span><h2>${prettyDate(S.selDate)}</h2>
+      <span class="meta">${matches.length} partido${matches.length!==1?'s':''}</span></div>
+      ${cards}
+    </div>${saveBar}`;
+}
+
+function matchCard(m,i){
+  const locked=isLocked(m);
+  const real=S.day.results?.[m.id];
+  const hasReal=real && real.h!=null;
+  const mine=S.myPred?.picks?.[m.id]||{};
+  let statusPill;
+  if(hasReal) statusPill='<span class="pill lock">Finalizado</span>';
+  else if(isStarted(m)) statusPill='<span class="pill live">● En juego</span>';
+  else if(locked) statusPill='<span class="pill lock">Cerrado</span>';
+  else statusPill=`<span class="pill open">${lockCountdown(m)||'Abierto'}</span>`;
+
+  const disabled=locked?'disabled':'';
+  const hv=mine.h!=null?mine.h:'';
+  const av=mine.a!=null?mine.a:'';
+
+  let realRow = hasReal ? `<div class="center" style="margin-top:6px">
+      <span class="real-badge">Resultado real &nbsp;${real.h} - ${real.a}</span></div>` : '';
+
+  let reveal='';
+  if(locked){
+    reveal=`<div class="reveal" id="rev_${m.id}">${revealRows(m,real,hasReal)}</div>`;
+  }
+
+  return `<div class="match">
+    <div class="mtop"><span class="ko">${fmtKO(m.kickoff)||'Hora por confirmar'}</span>${statusPill}</div>
+    <div class="teams">
+      <div class="team h">${esc(m.home)}</div>
+      <div class="score-in">
+        <input class="sin" data-mid="${m.id}" data-side="h" inputmode="numeric" maxlength="2" value="${hv}" ${disabled}>
+        <span class="vs">vs</span>
+        <input class="sin" data-mid="${m.id}" data-side="a" inputmode="numeric" maxlength="2" value="${av}" ${disabled}>
+      </div>
+      <div class="team a">${esc(m.away)}</div>
+    </div>
+    ${realRow}
+    ${reveal}
+  </div>`;
+}
+
+function revealRows(m,real,hasReal){
+  const rows=S.config.players.map(pl=>{
+    const pred=S.allPreds?.[pl.id];
+    const pick=pred?.picks?.[m.id];
+    const isMe=S.me&&pl.id===S.me.id;
+    let pickStr = (pick&&pick.h!=null)?`${pick.h}-${pick.a}`:'—';
+    let chip='';
+    if(hasReal){
+      const sc=scoreOne(real,pick);
+      chip=`<span class="chip ${chipClass(sc.p)}">${sc.noBet?'0':sc.p}</span>`;
+    } else {
+      chip=`<span class="chip c0">·</span>`;
+    }
+    return `<div class="rline">
+      <div class="nm">${isMe?'<b style="color:var(--gold2)">Tú</b>':esc(pl.name)}</div>
+      <span class="rpick">${pickStr}</span>${chip}
+    </div>`;
+  }).join('');
+  return `<div class="mini" style="margin:2px 0 4px;text-transform:uppercase;letter-spacing:1px;color:var(--muted2)">Pronósticos${hasReal?' · puntos':''}</div>`+rows;
+}
+
+async function savePicks(){
+  if(!S.me) return;
+  const inputs=document.querySelectorAll('.sin[data-mid]');
+  const picks=Object.assign({},S.myPred?.picks||{});
+  let saved=0, partial=0;
+  // agrupar por match
+  const byMatch={};
+  inputs.forEach(inp=>{
+    const mid=inp.dataset.mid, side=inp.dataset.side;
+    if(inp.disabled) return; // cerrado: no tocar
+    byMatch[mid]=byMatch[mid]||{};
+    const v=inp.value.trim();
+    byMatch[mid][side]=v===''?null:Math.max(0,Math.min(30,parseInt(v,10)||0));
+  });
+  for(const mid in byMatch){
+    const h=byMatch[mid].h, a=byMatch[mid].a;
+    if(h!=null && a!=null){ picks[mid]={h,a}; saved++; }
+    else if(h!=null || a!=null){ partial++; delete picks[mid]; }
+    else { delete picks[mid]; }
+  }
+  const rec={picks,updatedAt:Date.now()};
+  const ok=await sset(K.pred(S.selDate,S.me.id),rec);
+  if(!ok) return toast('No se pudo guardar, reintenta');
+  S.myPred=rec; S.allPreds[S.me.id]=rec;
+  toast(partial? `Guardado (${saved}). ${partial} quedó incompleto = Sin Apuesta` : `Guardado ✓ (${saved} partido${saved!==1?'s':''})`);
+}
+
+/* ============================================================
+   PESTAÑA RANKING
+   ============================================================ */
+function rankingHTML(){
+  const st=S.standings||{totals:{},perDay:{}};
+  const players=S.config.players.map(p=>({...p,pts:st.totals[p.id]||0}));
+  players.sort((a,b)=>b.pts-a.pts || a.name.localeCompare(b.name));
+  const playedDays=Object.keys(st.perDay||{}).length;
+  if(playedDays===0 && players.every(p=>p.pts===0)){
+    var note=`<div class="empty"><div class="big">🏁</div>El ranking aparece cuando se ingresen resultados.</div>`;
+  }
+  let rows=players.map((p,i)=>{
+    const top=i<3?` top${i+1}`:'';
+    const me=S.me&&p.id===S.me.id?' me':'';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    return `<div class="rk${top}${me}">
+      <div class="pos">${medal}</div>
+      <div class="nm">${esc(p.name)}${me?' <small style="color:var(--blue)">(tú)</small>':''}</div>
+      <div class="pts">${p.pts}<small>pts</small></div>
+    </div>`;
+  }).join('');
+  return `<div class="row" style="margin:14px 0 12px">
+      <div class="mini">Fechas jugadas: <b style="color:var(--text)">${playedDays}</b></div>
+      <button class="btn ghost sm" style="margin-left:auto" onclick="loadStandings()">↻ Actualizar</button>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="dot"></span><h2>Ranking general</h2><span class="meta">Acumulado</span></div>
+      ${note||rows}
+    </div>`;
+}
+
+/* ============================================================
+   PESTAÑA REGLAS
+   ============================================================ */
+function reglasHTML(){
+  return `<div class="panel" style="margin-top:14px">
+    <div class="ph"><span class="dot"></span><h2>Sistema de puntaje</h2><span class="meta">Acumulativo · máx 5</span></div>
+    <div class="rule"><div class="badge g">🎯</div><div><h3>Tendencia correcta</h3>
+      <p>Aciertas ganador o empate.</p></div><div class="pts g">+2</div></div>
+    <div class="rule"><div class="badge b">⚖️</div><div><h3>Diferencia de goles</h3>
+      <p>Aciertas la diferencia entre los goles.</p></div><div class="pts b">+1</div></div>
+    <div class="rule"><div class="badge y">⚽</div><div><h3>Marcador exacto</h3>
+      <p>1 punto por cada marcador acertado (local y/o visita).</p></div><div class="pts y">+1×</div></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="ph"><span class="dot"></span><h2>Combinaciones</h2></div>
+    <table class="combos">
+      <tr><td>Nada correcto</td><td style="color:var(--muted)!important">0</td></tr>
+      <tr><td>Solo un marcador exacto</td><td>1</td></tr>
+      <tr><td>Solo tendencia</td><td>2</td></tr>
+      <tr><td>Tendencia + un marcador exacto</td><td>3</td></tr>
+      <tr><td>Tendencia + diferencia</td><td>3</td></tr>
+      <tr><td>Marcador exacto total (ambos goles)</td><td>5</td></tr>
+    </table>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="ph"><span class="dot"></span><h2>Cómo se juega</h2></div>
+    <div style="padding:14px">
+      <div class="note">1. Se publican los partidos del día. &nbsp;2. Cada uno ingresa su pronóstico <b>en privado</b>. &nbsp;3. Cada partido cierra 5 min antes de empezar. &nbsp;4. Al cerrar, se revelan los pronósticos de todos. &nbsp;5. Se ingresan los resultados y el ranking se actualiza solo.</div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   PESTAÑA ADMIN
+   ============================================================ */
+function adminHTML(){
+  const seg=[['fecha','Nueva fecha'],['resultados','Resultados'],['jugadores','Jugadores'],['ajustes','Ajustes']];
+  const segHTML=`<div class="seg">${seg.map(([id,l])=>`<button class="${S.adminTab===id?'active':''}" onclick="adminGo('${id}')">${l}</button>`).join('')}</div>`;
+  let body='';
+  if(S.adminTab==='fecha') body=adminFecha();
+  else if(S.adminTab==='resultados') body=adminResultados();
+  else if(S.adminTab==='jugadores') body=adminJugadores();
+  else body=adminAjustes();
+  return `<div style="margin-top:14px">${segHTML}${body}</div>`;
+}
+async function adminGo(t){
+  S.adminTab=t;
+  if(t==='resultados'){
+    S.dayIndex=(await sget(K.dayIndex))||[];
+    if(!S.selDate||!S.dayIndex.includes(S.selDate)) S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
+    if(S.selDate) S.day=await sget(K.day(S.selDate));
+  }
+  render();
+}
+
+/* --- Admin: crear fecha --- */
+function adminFecha(){
+  const rows=S.draftMatches.map((m,i)=>`
+    <div class="panel pad" style="margin-bottom:10px">
+      <div class="row" style="justify-content:space-between"><b class="osw">Partido ${i+1}</b>
+        <button class="link" onclick="rmDraft(${i})">Quitar</button></div>
+      <div class="grid2" style="margin-top:8px">
+        <input class="input" placeholder="Local" value="${esc(m.home)}" oninput="setDraft(${i},'home',this.value)">
+        <input class="input" placeholder="Visita" value="${esc(m.away)}" oninput="setDraft(${i},'away',this.value)">
+      </div>
+      <div class="field" style="margin:10px 0 0">
+        <label>Inicio del partido (fecha y hora)</label>
+        <input class="input" type="datetime-local" value="${m.kickoff||''}" oninput="setDraft(${i},'kickoff',this.value)">
+      </div>
+    </div>`).join('');
+  return `<div class="panel pad">
+      <div class="field" style="margin-top:0">
+        <label>Fecha de la jornada</label>
+        <input class="input" type="date" id="af_date" value="${todayStr()}">
+      </div>
+      <div class="note">Agrega los partidos del día. La hora de inicio define cuándo cierra cada apuesta (5 min antes).</div>
+    </div>
+    <div style="margin-top:12px">${rows||'<div class="panel pad empty mini">Sin partidos aún.</div>'}</div>
+    <button class="btn ghost" style="margin-top:10px" onclick="addDraft()">+ Agregar partido</button>
+    <button class="btn" style="margin-top:10px" onclick="publishDay()">Publicar fecha</button>`;
+}
+function addDraft(){ S.draftMatches.push({id:uid(),home:'',away:'',kickoff:''}); render(); }
+function rmDraft(i){ S.draftMatches.splice(i,1); render(); }
+function setDraft(i,k,v){ S.draftMatches[i][k]=v; }
+async function publishDay(){
+  const date=$('af_date').value;
+  if(!date) return toast('Elige la fecha de la jornada');
+  const ms=S.draftMatches.filter(m=>m.home.trim()&&m.away.trim());
+  if(!ms.length) return toast('Agrega al menos un partido con equipos');
+  const normalized=ms.map(m=>({id:m.id,home:m.home.trim(),away:m.away.trim(),
+    kickoff:m.kickoff?new Date(m.kickoff).toISOString():null}));
+  const existing=await sget(K.day(date));
+  const day={date,matches:normalized,results:existing?.results||{}};
+  const ok=await sset(K.day(date),day);
+  if(!ok) return toast('No se pudo guardar');
+  let idx=(await sget(K.dayIndex))||[];
+  if(!idx.includes(date)){ idx.push(date); idx.sort(); await sset(K.dayIndex,idx); }
+  S.dayIndex=idx; S.draftMatches=[]; toast('Fecha publicada ✓');
+  S.adminTab='resultados'; S.selDate=date; S.day=day; render();
+}
+
+/* --- Admin: ingresar resultados --- */
+function adminResultados(){
+  const idx=S.dayIndex;
+  if(!idx.length) return `<div class="panel pad empty">Aún no hay fechas. Crea una en “Nueva fecha”.</div>`;
+  const sel=S.selDate&&idx.includes(S.selDate)?S.selDate:idx[idx.length-1];
+  const opts=idx.map(d=>`<option value="${d}" ${d===sel?'selected':''}>${prettyDate(d)}</option>`).join('');
+  let inner='<div class="panel pad empty mini">Cargando…</div>';
+  // S.day debe estar cargado para 'sel'
+  if(S.day && S.day.date===sel){
+    const rows=S.day.matches.map(m=>{
+      const r=S.day.results?.[m.id]||{};
+      return `<div class="match">
+        <div class="teams">
+          <div class="team h">${esc(m.home)}</div>
+          <div class="score-in">
+            <input class="sin" data-rid="${m.id}" data-side="h" inputmode="numeric" maxlength="2" value="${r.h!=null?r.h:''}">
+            <span class="vs">-</span>
+            <input class="sin" data-rid="${m.id}" data-side="a" inputmode="numeric" maxlength="2" value="${r.a!=null?r.a:''}">
+          </div>
+          <div class="team a">${esc(m.away)}</div>
+        </div></div>`;
+    }).join('');
+    inner=`<div class="panel"><div class="ph"><span class="dot"></span><h2>${prettyDate(sel)}</h2></div>${rows}</div>
+      <button class="btn" style="margin-top:12px" onclick="saveResults('${sel}')">Guardar resultados y calcular ranking</button>
+      <div class="mini center" style="margin-top:8px">Deja en blanco los partidos que aún no terminan.</div>`;
+  }
+  return `<div class="row" style="margin-bottom:12px">
+      <select class="input" style="flex:1" onchange="adminPickResultDay(this.value)">${opts}</select>
+    </div>${inner}`;
+}
+async function adminPickResultDay(d){ S.selDate=d; S.day=await sget(K.day(d)); render(); }
+async function saveResults(date){
+  const day=await sget(K.day(date)); if(!day) return toast('Fecha no encontrada');
+  const inputs=document.querySelectorAll('.sin[data-rid]');
+  const byMatch={};
+  inputs.forEach(inp=>{
+    const mid=inp.dataset.rid,side=inp.dataset.side,v=inp.value.trim();
+    byMatch[mid]=byMatch[mid]||{};
+    byMatch[mid][side]=v===''?null:Math.max(0,Math.min(30,parseInt(v,10)||0));
+  });
+  const results={};
+  for(const mid in byMatch){
+    const h=byMatch[mid].h,a=byMatch[mid].a;
+    if(h!=null&&a!=null) results[mid]={h,a};
+  }
+  day.results=results;
+  const ok=await sset(K.day(date),day);
+  if(!ok) return toast('No se pudo guardar');
+  await rescoreDay(date);
+  S.day=day; toast('Resultados guardados y ranking actualizado ✓');
+  render();
+}
+async function rescoreDay(date){
+  const day=await sget(K.day(date)); if(!day) return;
+  const cfg=await sget(K.config);
+  const perDay={};
+  for(const pl of cfg.players){
+    const pred=await sget(K.pred(date,pl.id));
+    let total=0;
+    for(const m of day.matches){
+      const real=day.results?.[m.id];
+      if(real&&real.h!=null){
+        const sc=scoreOne(real,pred?.picks?.[m.id]);
+        total+=(sc.p||0);
+      }
+    }
+    perDay[pl.id]=total;
+  }
+  const st=(await sget(K.standings))||{perDay:{},totals:{}};
+  st.perDay[date]=perDay;
+  const totals={};
+  for(const d in st.perDay) for(const pid in st.perDay[d]) totals[pid]=(totals[pid]||0)+st.perDay[d][pid];
+  st.totals=totals;
+  await sset(K.standings,st);
+  S.standings=st;
+}
+
+/* --- Admin: jugadores --- */
+function adminJugadores(){
+  const rows=S.config.players.map((p,i)=>`
+    <div class="listrow">
+      <input class="input" style="flex:1" value="${esc(p.name)}" onchange="renamePlayer('${p.id}',this.value)">
+      <span class="pill ${p.pin?'lock':'open'}">${p.pin?'PIN ✓':'sin PIN'}</span>
+      ${p.pin?`<button class="btn ghost sm" onclick="resetPin('${p.id}')">Reset PIN</button>`:''}
+    </div>`).join('');
+  return `<div class="panel pad">
+    <div class="mini" style="margin-bottom:8px">Jugadores: <b style="color:var(--text)">${S.config.players.length}</b> / 14</div>
+    ${rows}
+    ${S.config.players.length<14?`<button class="btn ghost" style="margin-top:12px" onclick="addPlayer()">+ Agregar jugador</button>`:''}
+  </div>
+  <div class="note" style="margin-top:12px">“Reset PIN” permite que un jugador vuelva a fijar su PIN (si lo olvidó). Tú no ves los PIN ni los pronósticos de los demás desde aquí.</div>`;
+}
+async function renamePlayer(id,name){
+  S.config=await sget(K.config);
+  const p=S.config.players.find(x=>x.id===id); if(!p) return;
+  p.name=name.trim()||p.name; await sset(K.config,S.config); toast('Nombre actualizado');
+}
+async function resetPin(id){
+  if(!confirm('¿Borrar el PIN de este jugador para que lo fije de nuevo?')) return;
+  S.config=await sget(K.config);
+  const p=S.config.players.find(x=>x.id===id); if(!p) return;
+  p.pin=null; await sset(K.config,S.config); toast('PIN reseteado'); render();
+}
+async function addPlayer(){
+  const name=prompt('Nombre del jugador:'); if(!name||!name.trim()) return;
+  S.config=await sget(K.config);
+  if(S.config.players.length>=14) return toast('Ya hay 14 jugadores');
+  S.config.players.push({id:uid(),name:name.trim(),pin:null});
+  await sset(K.config,S.config); toast('Jugador agregado'); render();
+}
+
+/* --- Admin: ajustes --- */
+function adminAjustes(){
+  return `<div class="panel pad">
+    <div class="field" style="margin-top:0">
+      <label>Cambiar PIN de administrador</label>
+      <input class="input" id="aj_pin" inputmode="numeric" maxlength="6" placeholder="Nuevo PIN (4-6 dígitos)">
+    </div>
+    <button class="btn blue" onclick="changeAdminPin()">Guardar nuevo PIN</button>
+    <div class="divider"></div>
+    <div class="mini">Enlace de la app: compártelo con los 14 amigos. Cada uno entra con su nombre y fija su PIN la primera vez.</div>
+    <div class="divider"></div>
+    <button class="btn danger" onclick="wipeAll()">Reiniciar TODO (borrar polla)</button>
+    <div class="mini" style="margin-top:6px">Borra jugadores, fechas, pronósticos y ranking. No se puede deshacer.</div>
+  </div>`;
+}
+async function changeAdminPin(){
+  const pin=$('aj_pin').value.trim();
+  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4-6 dígitos)');
+  S.config=await sget(K.config); S.config.adminPin=pin; await sset(K.config,S.config);
+  toast('PIN de admin actualizado');
+}
+async function wipeAll(){
+  if(!confirm('Esto borra TODA la polla. ¿Seguro?')) return;
+  if(!confirm('Última confirmación: se perderán jugadores, fechas y ranking.')) return;
+  const idx=(await sget(K.dayIndex))||[];
+  for(const d of idx){
+    await sdel(K.day(d));
+    for(const pl of (S.config.players||[])){ await sdel(K.pred(d,pl.id)); }
+  }
+  await sdel(K.config);
+  await sdel(K.dayIndex);
+  await sdel(K.standings);
+  S=Object.assign(S,{config:null,me:null,isAdmin:false,dayIndex:[],selDate:null,day:null,screen:'setup'});
+  const n=document.querySelector('nav.tabs'); if(n) n.remove();
+  toast('Polla reiniciada'); render();
+}
+
+/* ============================================================
+   BINDINGS POR PESTAÑA + RELOJ DE CUENTA REGRESIVA
+   ============================================================ */
+function bindByTab(){ /* listeners ya van inline */ }
+
+// actualiza textos de "Cierra en…" sin re-renderizar (no pisa lo que escribes)
+setInterval(()=>{
+  if(S.screen!=='app'||S.tab!=='partidos'||!S.day) return;
+  document.querySelectorAll('.pill.open').forEach(()=>{});
+  // refresco ligero: solo si hay countdowns visibles, re-render cada 30s
+},1000);
+let lastSoftRefresh=Date.now();
+setInterval(async ()=>{
+  if(S.screen!=='app') return;
+  // refresco suave del ranking
+  if(S.tab==='ranking'){ await loadStandings(); }
+  // en partidos: re-render solo si cambió el estado de lock de algún partido (para revelar)
+  if(S.tab==='partidos' && S.day){
+    const editingFocus=document.activeElement && document.activeElement.classList.contains('sin');
+    if(!editingFocus && Date.now()-lastSoftRefresh>20000){
+      lastSoftRefresh=Date.now(); await loadDayView();
+    }
+  }
+},8000);
+</script>
+</body>
+</html>
