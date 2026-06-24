@@ -704,6 +704,7 @@ async function adminGo(t){
     if(!S.selDate||!S.dayIndex.includes(S.selDate)) S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
     if(S.selDate) S.day=await sget(K.day(S.selDate));
   }
+  if(t==='ajustes'){ S.standings=(await sget(K.standings))||{perDay:{},totals:{}}; }
   render();
 }
 
@@ -900,11 +901,25 @@ async function rescoreDay(date){
   });
   const st=(await sget(K.standings))||{perDay:{},totals:{}};
   st.perDay[date]=perDay;
-  const totals={};
-  for(const d in st.perDay) for(const pid in st.perDay[d]) totals[pid]=(totals[pid]||0)+st.perDay[d][pid];
-  st.totals=totals;
+  recomputeTotals(st);
   await sset(K.standings,st);
   S.standings=st;
+}
+function recomputeTotals(st){
+  const totals={}; const base=st.base||{};
+  for(const pid in base) totals[pid]=(totals[pid]||0)+(base[pid]||0);
+  for(const d in (st.perDay||{})) for(const pid in st.perDay[d]) totals[pid]=(totals[pid]||0)+(st.perDay[d][pid]||0);
+  st.totals=totals;
+}
+async function saveBasePoints(){
+  const st=(await sget(K.standings))||{perDay:{},totals:{}};
+  st.base=st.base||{};
+  document.querySelectorAll('.bp[data-pid]').forEach(inp=>{
+    st.base[inp.dataset.pid]=Math.max(0,parseInt(inp.value,10)||0);
+  });
+  recomputeTotals(st);
+  await sset(K.standings,st); S.standings=st;
+  toast('Puntos acumulados guardados ✓');
 }
 
 /* --- Admin: jugadores --- */
@@ -943,7 +958,21 @@ async function addPlayer(){
 
 /* --- Admin: ajustes --- */
 function adminAjustes(){
+  const base=(S.standings&&S.standings.base)||{};
+  const bprows=S.config.players.map(p=>`
+    <div class="listrow">
+      <span class="osw" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.name)}</span>
+      <input class="sin bp" data-pid="${p.id}" style="width:64px;height:42px;font-size:18px" inputmode="numeric" maxlength="4" value="${base[p.id]!=null?base[p.id]:0}">
+    </div>`).join('');
   return `<div class="panel pad">
+    <div class="row" style="justify-content:space-between"><b class="osw">📥 Cargar puntos acumulados</b><span class="pill open">inicial</span></div>
+    <p class="mini" style="margin:8px 0">Si ya venían jugando, ingresa el puntaje actual de cada uno. La app seguirá sumando sobre estos en cada fecha nueva.</p>
+    ${bprows}
+    <button class="btn" style="margin-top:12px" onclick="saveBasePoints()">Guardar puntos acumulados</button>
+    <div class="mini" style="margin-top:8px">Importante: estos son los puntos de los días <b>ya jugados</b>. No vuelvas a ingresar resultados de esos días en la app, o se sumarían dos veces.</div>
+  </div>
+  <div class="divider"></div>
+  <div class="panel pad">
     <div class="field" style="margin-top:0">
       <label>Cambiar PIN de administrador</label>
       <input class="input" id="aj_pin" inputmode="numeric" maxlength="6" placeholder="Nuevo PIN (4-6 dígitos)">
