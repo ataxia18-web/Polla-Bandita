@@ -317,6 +317,7 @@ function lockCountdown(m){
   try{
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    try{ db.settings({ experimentalAutoDetectLongPolling: true }); }catch(e){}
   }catch(e){ console.error(e); S.screen='needconfig'; render(); return; }
   S.config = await sget(K.config);
   if(!S.config){ S.screen='setup'; render(); }
@@ -456,7 +457,8 @@ async function doLogin(){
     return toast('PIN incorrecto');
   }
   S.me={id:pl.id,name:pl.name}; S.isAdmin=false; S.screen='app'; S.tab='partidos';
-  await loadDayView(); render();
+  toast('Entrando…');
+  await loadDayView();
 }
 function adminLogin(){
   const pin=prompt('PIN de administrador:');
@@ -471,24 +473,26 @@ function logout(){ S.me=null; S.isAdmin=false; S.screen='login'; const n=documen
    CARGA DE DATOS DE UN DÍA
    ============================================================ */
 async function loadDayView(){
-  S.dayIndex=(await sget(K.dayIndex))||[];
-  S.standings=(await sget(K.standings))||{perDay:{},totals:{}};
+  const [dayIndex, standings] = await Promise.all([ sget(K.dayIndex), sget(K.standings) ]);
+  S.dayIndex = dayIndex || [];
+  S.standings = standings || {perDay:{},totals:{}};
   if(!S.selDate){
     if(S.dayIndex.includes(todayStr())) S.selDate=todayStr();
     else S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
   }
-  if(S.selDate){
-    S.day=await sget(K.day(S.selDate));
-    S.myPred=S.me?await sget(K.pred(S.selDate,S.me.id)):null;
-    // cargar pronósticos de todos solo para reveal de partidos cerrados
-    S.allPreds={};
-    if(S.day){
-      for(const pl of S.config.players){
-        S.allPreds[pl.id]=await sget(K.pred(S.selDate,pl.id));
-      }
-    }
-  } else { S.day=null; S.myPred=null; S.allPreds=null; }
-  render();
+  if(!S.selDate){ S.day=null; S.myPred=null; S.allPreds=null; render(); return; }
+  const [day, myPred] = await Promise.all([
+    sget(K.day(S.selDate)),
+    S.me ? sget(K.pred(S.selDate,S.me.id)) : Promise.resolve(null)
+  ]);
+  S.day=day; S.myPred=myPred;
+  render(); // pinta de inmediato; lo demás carga de fondo
+  if(day){
+    const ids=S.config.players.map(p=>p.id);
+    const preds=await Promise.all(ids.map(id=>sget(K.pred(S.selDate,id))));
+    const ap={}; ids.forEach((id,i)=>ap[id]=preds[i]); S.allPreds=ap;
+    if(S.screen==='app' && S.tab==='partidos') render();
+  } else { S.allPreds=null; }
 }
 async function loadStandings(){
   S.standings=(await sget(K.standings))||{perDay:{},totals:{}};
@@ -882,21 +886,18 @@ async function saveResults(date){
   render();
 }
 async function rescoreDay(date){
-  const day=await sget(K.day(date)); if(!day) return;
-  const cfg=await sget(K.config);
+  const [day, cfg] = await Promise.all([ sget(K.day(date)), sget(K.config) ]);
+  if(!day || !cfg) return;
+  const preds = await Promise.all(cfg.players.map(pl=>sget(K.pred(date,pl.id))));
   const perDay={};
-  for(const pl of cfg.players){
-    const pred=await sget(K.pred(date,pl.id));
-    let total=0;
+  cfg.players.forEach((pl,i)=>{
+    const pred=preds[i]; let total=0;
     for(const m of day.matches){
       const real=day.results?.[m.id];
-      if(real&&real.h!=null){
-        const sc=scoreOne(real,pred?.picks?.[m.id]);
-        total+=(sc.p||0);
-      }
+      if(real&&real.h!=null){ const sc=scoreOne(real,pred?.picks?.[m.id]); total+=(sc.p||0); }
     }
     perDay[pl.id]=total;
-  }
+  });
   const st=(await sget(K.standings))||{perDay:{},totals:{}};
   st.perDay[date]=perDay;
   const totals={};
