@@ -39,6 +39,8 @@
   header.top::before{content:"";position:absolute;inset:-40% 0 auto 0;height:160px;
     background:radial-gradient(closest-side, rgba(46,155,230,.28), transparent 70%);filter:blur(6px);pointer-events:none}
   .crest{font-size:30px;line-height:1}
+  .trophy{display:block;margin:0 auto 2px;height:92px;width:auto;
+    filter:drop-shadow(0 4px 11px rgba(232,181,48,.38))}
   header.top h1{font-size:clamp(30px,9vw,46px);line-height:.92;color:#fff;
     text-shadow:0 2px 0 #1b2a44,0 0 24px rgba(46,155,230,.35)}
   header.top h1 .gold{color:var(--gold2);text-shadow:0 0 18px rgba(232,181,48,.5)}
@@ -354,7 +356,39 @@ function render(){
 
 function headerHTML(showUser){
   return `<header class="top">
-    <div class="crest">🏆</div>
+    <svg class="trophy" viewBox="0 0 250 168" xmlns="http://www.w3.org/2000/svg" aria-label="Mundial 26">
+      <defs>
+        <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFF3C4"/><stop offset=".4" stop-color="#FFD96B"/>
+          <stop offset=".75" stop-color="#E8B530"/><stop offset="1" stop-color="#A9791A"/>
+        </linearGradient>
+        <radialGradient id="globe" cx=".38" cy=".34" r=".8">
+          <stop offset="0" stop-color="#FFECAE"/><stop offset=".55" stop-color="#F1C64E"/>
+          <stop offset="1" stop-color="#BC8C1E"/>
+        </radialGradient>
+        <linearGradient id="numfill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#22324f"/><stop offset="1" stop-color="#0c1626"/>
+        </linearGradient>
+      </defs>
+      <g font-family="Anton, Impact, sans-serif" font-size="170" fill="url(#numfill)" stroke="#E8B530" stroke-width="2.2">
+        <text text-anchor="end" x="118" y="140">2</text>
+        <text text-anchor="start" x="132" y="140">6</text>
+      </g>
+      <g transform="translate(88,20) scale(0.62)">
+        <circle cx="60" cy="33" r="22" fill="url(#globe)" stroke="#8f6915" stroke-width="1.3"/>
+        <g stroke="#9c7218" stroke-width="1" fill="none" opacity=".55">
+          <path d="M60 11 V55 M38 33 H82"/>
+          <ellipse cx="60" cy="33" rx="9" ry="22"/>
+          <ellipse cx="60" cy="33" rx="22" ry="8.5"/>
+        </g>
+        <path d="M60 55 C43 60 35 75 41 93 C44 104 53 109 53 118 L67 118 C67 109 76 104 79 93 C85 75 77 60 60 55 Z" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
+        <path d="M60 58 C51 71 51 93 60 116 C69 93 69 71 60 58 Z" fill="#BC8C1E" opacity=".4"/>
+        <ellipse cx="60" cy="60" rx="17" ry="4.5" fill="#FFF3C4" opacity=".5"/>
+        <rect x="50" y="117" width="20" height="6" rx="2.5" fill="url(#gold)" stroke="#8f6915" stroke-width=".9"/>
+        <path d="M45 123 H75 L79 136 H41 Z" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
+        <rect x="37" y="136" width="46" height="9" rx="3.5" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
+      </g>
+    </svg>
     <h1 class="anton">POLLA <span class="gold">MUNDIAL</span></h1>
     <div class="sub">La Bandita de Macul</div>
     ${showUser?`<div style="margin-top:12px" class="row" >
@@ -468,11 +502,12 @@ async function doLogin(){
   toast('Entrando…');
   await loadDayView();
 }
-function adminLogin(){
+async function adminLogin(){
   const pin=prompt('PIN de administrador:');
   if(pin==null) return;
   if(pin.trim()!==S.config.adminPin) return toast('PIN de admin incorrecto');
   S.isAdmin=true; S.me=null; S.screen='app'; S.tab='admin'; S.adminTab='fecha';
+  S.dayIndex=(await sget(K.dayIndex))||[];
   render();
 }
 function logout(){ S.me=null; S.isAdmin=false; S.screen='login'; const n=document.querySelector('nav.tabs'); if(n) n.remove(); render(); }
@@ -708,6 +743,7 @@ function adminHTML(){
 }
 async function adminGo(t){
   S.adminTab=t;
+  if(t==='fecha'){ S.dayIndex=(await sget(K.dayIndex))||[]; }
   if(t==='resultados'){
     S.dayIndex=(await sget(K.dayIndex))||[];
     if(!S.selDate||!S.dayIndex.includes(S.selDate)) S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
@@ -732,19 +768,66 @@ function adminFecha(){
         <input class="input" type="datetime-local" value="${m.kickoff||''}" oninput="setDraft(${i},'kickoff',this.value)">
       </div>
     </div>`).join('');
-  return importBlockHTML() + `
+  const editing = S.fechaDate && S.dayIndex.includes(S.fechaDate);
+  return importBlockHTML()
+    + existingDaysHTML()
+    + `
     <div class="divider" style="margin:18px 0 12px"></div>
-    <div class="row" style="margin-bottom:10px"><b class="osw">…o agrega los partidos manualmente</b></div>
+    <div class="row" style="margin-bottom:10px;justify-content:space-between">
+      <b class="osw">${editing?('✏️ Editando '+prettyDate(S.fechaDate)):'…o agrega los partidos manualmente'}</b>
+      ${(S.draftMatches.length||editing)?'<button class="btn ghost sm" onclick="cancelEdit()">Limpiar</button>':''}
+    </div>
     <div class="panel pad">
       <div class="field" style="margin-top:0">
         <label>Fecha de la jornada</label>
-        <input class="input" type="date" id="af_date" value="${todayStr()}">
+        <input class="input" type="date" id="af_date" value="${S.fechaDate||todayStr()}" oninput="S.fechaDate=this.value">
       </div>
       <div class="note">La hora de inicio define cuándo cierra cada apuesta (5 min antes).</div>
     </div>
     <div style="margin-top:12px">${rows||'<div class="panel pad empty mini">Sin partidos aún.</div>'}</div>
     <button class="btn ghost" style="margin-top:10px" onclick="addDraft()">+ Agregar partido</button>
-    <button class="btn" style="margin-top:10px" onclick="publishDay()">Publicar fecha</button>`;
+    <button class="btn" style="margin-top:10px" onclick="publishDay()">${editing?'Guardar cambios':'Publicar fecha'}</button>`;
+}
+function existingDaysHTML(){
+  if(!S.dayIndex || !S.dayIndex.length) return '';
+  const rows=S.dayIndex.slice().sort().map(d=>`
+    <div class="listrow">
+      <b class="osw" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prettyDate(d)}</b>
+      <button class="btn ghost sm" onclick="editFecha('${d}')">Editar</button>
+      <button class="btn danger sm" onclick="deleteFecha('${d}')">Eliminar</button>
+    </div>`).join('');
+  return `<div class="divider" style="margin:18px 0 12px"></div>
+    <div class="panel pad">
+      <div class="row" style="justify-content:space-between"><b class="osw">🗓️ Fechas publicadas</b><span class="pill">${S.dayIndex.length}</span></div>
+      <p class="mini" style="margin:8px 0 2px">Toca <b>Editar</b> para corregir partidos u horas, o <b>Eliminar</b> para borrar la fecha.</p>
+      ${rows}
+    </div>`;
+}
+function isoToLocalInput(iso){
+  if(!iso) return '';
+  const d=new Date(iso); const p=n=>String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+}
+async function editFecha(date){
+  const day=await sget(K.day(date));
+  if(!day){ toast('No se encontró la fecha'); return; }
+  S.fechaDate=date;
+  S.draftMatches=(day.matches||[]).map(m=>({id:m.id,home:m.home,away:m.away,kickoff:isoToLocalInput(m.kickoff)}));
+  S.importPreview=null;
+  toast('Editando '+prettyDate(date)); render();
+}
+function cancelEdit(){ S.draftMatches=[]; S.fechaDate=null; render(); }
+async function deleteFecha(date){
+  if(!confirm('¿Eliminar la fecha '+prettyDate(date)+'? Se borran sus partidos y los pronósticos de ese día.')) return;
+  await sdel(K.day(date));
+  let idx=(await sget(K.dayIndex))||[]; idx=idx.filter(x=>x!==date);
+  await sset(K.dayIndex,idx); S.dayIndex=idx;
+  const st=(await sget(K.standings))||{perDay:{},totals:{}};
+  if(st.perDay&&st.perDay[date]){ delete st.perDay[date]; recomputeTotals(st); await sset(K.standings,st); S.standings=st; }
+  for(const pl of S.config.players){ await sdel(K.pred(date,pl.id)); }
+  if(S.selDate===date) S.selDate=null;
+  if(S.fechaDate===date){ S.fechaDate=null; S.draftMatches=[]; }
+  toast('Fecha eliminada'); render();
 }
 
 function importBlockHTML(){
@@ -827,20 +910,24 @@ function addDraft(){ S.draftMatches.push({id:uid(),home:'',away:'',kickoff:''});
 function rmDraft(i){ S.draftMatches.splice(i,1); render(); }
 function setDraft(i,k,v){ S.draftMatches[i][k]=v; }
 async function publishDay(){
-  const date=$('af_date').value;
+  const date=($('af_date')&&$('af_date').value)||S.fechaDate;
   if(!date) return toast('Elige la fecha de la jornada');
   const ms=S.draftMatches.filter(m=>m.home.trim()&&m.away.trim());
   if(!ms.length) return toast('Agrega al menos un partido con equipos');
-  const normalized=ms.map(m=>({id:m.id,home:m.home.trim(),away:m.away.trim(),
+  const normalized=ms.map(m=>({id:m.id||uid(),home:m.home.trim(),away:m.away.trim(),
     kickoff:m.kickoff?new Date(m.kickoff).toISOString():null}));
   const existing=await sget(K.day(date));
-  const day={date,matches:normalized,results:existing?.results||{}};
-  const ok=await sset(K.day(date),day);
+  const keep=new Set(normalized.map(m=>m.id));
+  const results={};
+  if(existing&&existing.results){ for(const id in existing.results){ if(keep.has(id)) results[id]=existing.results[id]; } }
+  const ok=await sset(K.day(date),{date,matches:normalized,results});
   if(!ok) return toast('No se pudo guardar');
   let idx=(await sget(K.dayIndex))||[];
   if(!idx.includes(date)){ idx.push(date); idx.sort(); await sset(K.dayIndex,idx); }
-  S.dayIndex=idx; S.draftMatches=[]; toast('Fecha publicada ✓');
-  S.adminTab='resultados'; S.selDate=date; S.day=day; render();
+  S.dayIndex=idx; S.draftMatches=[]; S.fechaDate=null;
+  await rescoreDay(date);
+  toast('Fecha guardada ✓');
+  S.adminTab='resultados'; S.selDate=date; S.day=await sget(K.day(date)); render();
 }
 
 /* --- Admin: ingresar resultados --- */
