@@ -615,22 +615,65 @@ async function openMundial(){
 }
 function refreshMundial(){ S.wcForce=true; openMundial(); }
 function mundialHTML(){
-  if(S.wcError && !S.wcGroups){
+  if(S.wcError && !wcCache){
     return `<div class="panel pad empty"><div class="big">📡</div>No se pudo cargar la tabla del Mundial.<br>
       <span class="mini">Revisa tu conexión e inténtalo de nuevo.</span><br>
       <button class="btn ghost sm" style="margin-top:14px" onclick="refreshMundial()">Reintentar</button></div>`;
   }
-  if(!S.wcGroups){
-    return `<div class="panel pad empty"><div class="big">🌎</div>Cargando tabla del Mundial…</div>`;
+  if(!wcCache){
+    return `<div class="panel pad empty"><div class="big">🌎</div>Cargando datos del Mundial…</div>`;
   }
+  const view=S.wcView||'grupos';
   const upd=S.wcUpdated?new Date(S.wcUpdated).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}):'';
-  const blocks=Object.keys(S.wcGroups).map(gn=>groupTableHTML(gn,S.wcGroups[gn])).join('');
-  return `<div class="row" style="margin:14px 0 10px">
-      <div class="mini"><span style="color:var(--green)">●</span> 1°-2° clasifican &nbsp;<span style="color:var(--gold2)">●</span> 3° (mejores terceros)</div>
-      <button class="btn ghost sm" style="margin-left:auto" onclick="refreshMundial()">↻</button>
-    </div>
-    ${blocks}
-    <div class="mini center" style="margin:8px 0 0">Datos: openfootball (dominio público). Se actualiza ~1 vez al día${upd?` · visto ${upd}`:''}.</div>`;
+  const seg=`<div class="row" style="margin:14px 0 12px;gap:8px">
+      <div class="seg" style="flex:1;margin:0">
+        <button class="${view==='grupos'?'active':''}" onclick="setWcView('grupos')">Grupos</button>
+        <button class="${view==='elim'?'active':''}" onclick="setWcView('elim')">Eliminación</button>
+      </div>
+      <button class="btn ghost sm" onclick="refreshMundial()">↻</button>
+    </div>`;
+  let content;
+  if(view==='elim'){
+    content=knockoutHTML();
+  } else {
+    const groups=S.wcGroups||computeGroups(wcCache);
+    content=`<div class="mini" style="margin-bottom:10px"><span style="color:var(--green)">●</span> 1°-2° clasifican &nbsp;<span style="color:var(--gold2)">●</span> 3° (mejores terceros)</div>`
+      + Object.keys(groups).map(gn=>groupTableHTML(gn,groups[gn])).join('');
+  }
+  return seg+content+`<div class="mini center" style="margin:8px 0 0">Datos: openfootball (dominio público). Se actualiza ~1 vez al día${upd?` · visto ${upd}`:''}.</div>`;
+}
+function setWcView(v){ S.wcView=v; render(); }
+const KO_ORDER=[['Round of 32','Dieciseisavos'],['Round of 16','Octavos de final'],['Quarter-final','Cuartos de final'],['Semi-final','Semifinales'],['Match for third place','Tercer lugar'],['Final','Final']];
+function computeKnockout(data){
+  const byRound={};
+  (data.matches||[]).forEach(m=>{ const r=m.round||''; if(KO_ORDER.some(o=>o[0]===r)) (byRound[r]=byRound[r]||[]).push(m); });
+  return byRound;
+}
+function koTeam(name){
+  if(name==null||/[\/0-9]/.test(name)) return `<span style="color:var(--muted2);font-weight:500">${esc(name||'?')}</span>`;
+  return esc(teamES(name));
+}
+function koMatchRow(m){
+  const ft=m.score&&m.score.ft;
+  const played=ft&&ft.length>=2&&ft[0]!=null;
+  const mid = played ? `<b style="font-family:'Anton';color:var(--gold2);font-size:20px">${ft[0]} - ${ft[1]}</b>` : `<span class="vs">vs</span>`;
+  return `<div class="match" style="padding:11px 14px">
+    <div class="mtop"><span class="ko">${m.date?prettyDate(m.date):'Por definir'}</span>${played?'<span class="pill lock">Final</span>':''}</div>
+    <div class="teams">
+      <div class="team h">${koTeam(m.team1)}</div>
+      <div class="score-in">${mid}</div>
+      <div class="team a">${koTeam(m.team2)}</div>
+    </div></div>`;
+}
+function knockoutHTML(){
+  const byRound=computeKnockout(wcCache||{matches:[]});
+  const blocks=KO_ORDER.filter(o=>byRound[o[0]]&&byRound[o[0]].length).map(o=>{
+    const rows=byRound[o[0]].map(koMatchRow).join('');
+    return `<div class="panel" style="margin-bottom:12px">
+      <div class="ph"><span class="dot"></span><h2>${o[1]}</h2><span class="meta">${byRound[o[0]].length} partido${byRound[o[0]].length!==1?'s':''}</span></div>
+      ${rows}</div>`;
+  }).join('');
+  return blocks || '<div class="panel pad empty mini">El cuadro aún no está disponible.</div>';
 }
 function groupTableHTML(name, rows){
   const tn=name.replace(/^Group\s*/i,'Grupo ');
@@ -1309,4 +1352,4 @@ setInterval(async ()=>{
 },8000);
 </script>
 </body>
-</html
+</html>
