@@ -1,1355 +1,440 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Polla Mundial · La Bandita de Macul</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mundial 2026 · Al Momento — La Bandita de Macul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#060b16; --bg2:#04070f;
-    --panel:#0e1726; --panel2:#13203a; --panel3:#172a47;
-    --line:rgba(232,181,48,.22);
-    --gold:#E8B530; --gold2:#FFD96B;
-    --blue:#2E9BE6; --green:#33B768; --red:#E2483A; --teal:#1f9b8e;
-    --text:#EAF1FB; --muted:#8FA0B8; --muted2:#5d6e87;
-    --shadow:0 18px 40px rgba(0,0,0,.55);
+    --pitch-0:#04140d;          /* night pitch */
+    --pitch-1:#0a2417;
+    --pitch-2:#0f3320;
+    --line:#1d4d33;             /* faint pitch lines */
+    --ink:#f2efe3;             /* warm off-white */
+    --ink-dim:#9bb3a4;
+    --gold:#e9b949;            /* trophy / camino al título */
+    --gold-soft:rgba(233,185,73,.16);
+    --live:#ff5a5f;            /* en vivo */
+    --card:#0c2117;
+    --card-2:#102a1c;
+    --radius:14px;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:'Inter',system-ui,sans-serif;color:var(--text);
+    font-family:"Barlow Condensed",system-ui,sans-serif;
     background:
-      radial-gradient(1200px 600px at 50% -8%, rgba(46,155,230,.16), transparent 60%),
-      radial-gradient(900px 500px at 50% 0%, rgba(232,181,48,.08), transparent 55%),
-      linear-gradient(180deg,var(--bg),var(--bg2));
-    background-attachment:fixed;min-height:100vh;
+      radial-gradient(120% 80% at 85% -10%, rgba(34,140,79,.35), transparent 55%),
+      radial-gradient(120% 90% at -10% 110%, rgba(20,90,52,.30), transparent 55%),
+      linear-gradient(180deg,#06170e 0%,#04120b 100%);
+    background-attachment:fixed;
+    color:var(--ink);
+    min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px);
   }
-  .wrap{max-width:680px;margin:0 auto;padding:0 14px 110px}
-  .anton{font-family:'Anton',sans-serif;letter-spacing:.5px}
-  .osw{font-family:'Oswald',sans-serif}
-  h1,h2,h3{margin:0}
-  button{font-family:inherit;cursor:pointer;border:none}
-  input,select{font-family:inherit}
+  .wrap{max-width:720px;margin:0 auto;padding:0 14px}
 
-  /* HEADER */
-  header.top{position:relative;text-align:center;padding:26px 10px 14px;overflow:hidden}
-  header.top::before{content:"";position:absolute;inset:-40% 0 auto 0;height:160px;
-    background:radial-gradient(closest-side, rgba(46,155,230,.28), transparent 70%);filter:blur(6px);pointer-events:none}
-  .crest{font-size:30px;line-height:1}
-  .trophy{display:block;margin:0 auto 2px;height:92px;width:auto;
-    filter:drop-shadow(0 4px 11px rgba(232,181,48,.38))}
-  header.top h1{font-size:clamp(30px,9vw,46px);line-height:.92;color:#fff;
-    text-shadow:0 2px 0 #1b2a44,0 0 24px rgba(46,155,230,.35)}
-  header.top h1 .gold{color:var(--gold2);text-shadow:0 0 18px rgba(232,181,48,.5)}
-  .sub{font-family:'Oswald';text-transform:uppercase;letter-spacing:4px;color:var(--gold);
-    font-weight:600;font-size:12px;margin-top:7px;
-    display:inline-flex;align-items:center;gap:10px}
-  .sub::before,.sub::after{content:"";width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-  .sub::after{background:linear-gradient(90deg,var(--gold),transparent)}
+  /* ---------- Hero ---------- */
+  header{padding:22px 0 10px;position:relative}
+  .eyebrow{
+    font-size:.82rem;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;margin:0 0 4px;padding-left:.42em;
+  }
+  h1{
+    font-family:"Anton",sans-serif;font-weight:400;line-height:.92;
+    margin:0;letter-spacing:.01em;text-transform:uppercase;
+    font-size:clamp(2.6rem,12vw,4.4rem);
+    background:linear-gradient(180deg,#ffffff 0%,#cfe6d6 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 2px 0 rgba(0,0,0,.25);
+  }
+  .sub{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .badge{
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem;
+    color:#06170e;background:var(--gold);padding:3px 10px;border-radius:999px;
+  }
+  .sub .host{color:var(--ink-dim);font-size:1rem;letter-spacing:.04em}
 
-  /* PANELS */
-  .panel{background:linear-gradient(180deg,var(--panel),#0b1322);border:1px solid var(--line);
-    border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-  .panel.pad{padding:16px}
-  .ph{display:flex;align-items:center;gap:10px;padding:13px 16px;
-    background:linear-gradient(90deg,rgba(232,181,48,.10),transparent);
-    border-bottom:1px solid var(--line)}
-  .ph .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
-  .ph h2{font-family:'Oswald';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:15px}
-  .ph .meta{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+  .progress{
+    margin-top:16px;display:flex;align-items:center;gap:12px;
+    background:linear-gradient(90deg,var(--card),transparent);
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:10px 14px;
+  }
+  .progress .bar{flex:1;height:8px;border-radius:99px;background:#10271b;overflow:hidden}
+  .progress .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#f2d488);border-radius:99px;transition:width .5s}
+  .progress .lbl{font-size:.92rem;color:var(--ink-dim);white-space:nowrap}
+  .progress .lbl b{color:var(--ink);font-weight:700}
 
-  /* TABS */
-  nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:40;
-    background:linear-gradient(180deg,rgba(8,13,24,.6),rgba(4,7,15,.97));
-    backdrop-filter:blur(10px);border-top:1px solid var(--line);
-    display:flex;justify-content:center;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
-  nav.tabs button{flex:1;max-width:120px;background:transparent;color:var(--muted);
-    border-radius:11px;padding:8px 4px;font-family:'Oswald';font-weight:600;font-size:11px;
-    text-transform:uppercase;letter-spacing:.8px;display:flex;flex-direction:column;align-items:center;gap:3px}
-  nav.tabs button .ic{font-size:18px;line-height:1}
-  nav.tabs button.active{color:var(--gold2);background:rgba(232,181,48,.10)}
+  /* ---------- Round selector ---------- */
+  nav.rounds{
+    position:sticky;top:0;z-index:20;margin:16px -14px 6px;
+    padding:8px 14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+    background:linear-gradient(180deg,rgba(4,18,11,.96),rgba(4,18,11,.78));
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  }
+  nav.rounds::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;border:1px solid var(--line);background:var(--card);
+    color:var(--ink-dim);font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    font-size:.92rem;padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+    transition:.18s;
+  }
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{background:var(--gold);color:#06170e;border-color:var(--gold)}
+  .tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-  /* GENERIC */
-  .muted{color:var(--muted)}
-  .center{text-align:center}
-  .row{display:flex;align-items:center;gap:10px}
-  .btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1306;
-    font-family:'Oswald';font-weight:700;text-transform:uppercase;letter-spacing:1px;
-    padding:13px 18px;border-radius:12px;font-size:14px;width:100%;box-shadow:0 8px 20px rgba(232,181,48,.22)}
-  .btn:active{transform:translateY(1px)}
-  .btn.blue{background:linear-gradient(180deg,#56b4f0,var(--blue));color:#04121f;box-shadow:0 8px 20px rgba(46,155,230,.25)}
-  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text);box-shadow:none}
-  .btn.danger{background:linear-gradient(180deg,#ef6557,var(--red));color:#fff;box-shadow:none}
-  .btn.sm{padding:9px 12px;font-size:12px;width:auto}
-  .field{display:block;margin:12px 0}
-  .field label{display:block;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;
-    font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
-  .input{width:100%;background:#0a1322;border:1px solid var(--line);border-radius:11px;
-    color:var(--text);padding:12px 13px;font-size:16px;outline:none}
-  .input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,155,230,.18)}
-  .pill{display:inline-flex;align-items:center;gap:6px;font-family:'Oswald';font-weight:600;
-    font-size:11px;text-transform:uppercase;letter-spacing:.6px;padding:4px 9px;border-radius:999px;
-    border:1px solid var(--line);color:var(--muted)}
-  .pill.live{color:#ff7a6b;border-color:rgba(226,72,58,.5);background:rgba(226,72,58,.10)}
-  .pill.open{color:var(--green);border-color:rgba(51,183,104,.45);background:rgba(51,183,104,.10)}
-  .pill.lock{color:var(--muted);background:rgba(255,255,255,.04)}
-  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);
-    background:#11203a;border:1px solid var(--line);color:var(--text);padding:11px 16px;border-radius:12px;
-    font-weight:600;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;
-    transition:.25s;z-index:60;max-width:90vw;text-align:center}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* ---------- Match cards (round view) ---------- */
+  .round-head{display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 8px}
+  .round-head h2{font-family:"Anton";font-weight:400;letter-spacing:.04em;text-transform:uppercase;margin:0;font-size:1.5rem}
+  .round-head .when{color:var(--ink-dim);font-size:.9rem;letter-spacing:.04em}
 
-  /* MATCH CARD */
-  .match{padding:14px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
-  .match:last-child{border-bottom:none}
-  .match .mtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-  .match .ko{font-family:'Oswald';font-size:12px;color:var(--muted);font-weight:600}
-  .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
-  .team{font-family:'Oswald';font-weight:600;font-size:15px}
-  .team.h{text-align:right}
-  .team.a{text-align:left}
-  .score-in{display:flex;align-items:center;justify-content:center;gap:8px}
-  .sin{width:54px;height:54px;text-align:center;font-size:22px;font-weight:800;
-    background:#0a1322;border:1.5px solid var(--line);border-radius:12px;color:#fff;
-    -moz-appearance:textfield}
-  .sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .sin:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,155,230,.18);outline:none}
-  .sin:disabled{opacity:.85;background:#0c1426}
-  .vs{font-family:'Oswald';color:var(--gold);font-weight:700;font-size:13px}
-  .real-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Oswald';font-weight:700;
-    font-size:13px;color:var(--gold2);background:rgba(232,181,48,.10);border:1px solid var(--line);
-    padding:5px 10px;border-radius:9px}
+  .matches{display:grid;gap:10px}
+  .match{
+    background:linear-gradient(180deg,var(--card-2),var(--card));
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .match .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.04);
+    font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)
+  }
+  .pill{font-weight:700;padding:2px 8px;border-radius:999px;font-size:.72rem;letter-spacing:.08em}
+  .pill.prog{background:#10271b;color:var(--ink-dim);border:1px solid var(--line)}
+  .pill.live{background:rgba(255,90,95,.16);color:var(--live);border:1px solid rgba(255,90,95,.4)}
+  .pill.live::before{content:"●";margin-right:5px;animation:blink 1.1s infinite}
+  .pill.done{background:var(--gold-soft);color:var(--gold);border:1px solid rgba(233,185,73,.4)}
+  @keyframes blink{50%{opacity:.25}}
 
-  /* REVEAL TABLE */
-  .reveal{margin-top:10px;border-top:1px dashed rgba(255,255,255,.10);padding-top:10px}
-  .rline{display:flex;align-items:center;justify-content:space-between;padding:6px 2px;font-size:13px}
-  .rline .nm{font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;min-width:0}
-  .rline .nm small{color:var(--muted);font-weight:500}
-  .rpick{font-family:'Oswald';font-weight:700;color:var(--muted);margin-left:auto;margin-right:10px}
-  .chip{font-family:'Oswald';font-weight:700;font-size:12px;min-width:30px;text-align:center;
-    padding:3px 8px;border-radius:8px;border:1px solid transparent}
-  .chip.c0{color:var(--muted);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
-  .chip.c1{color:#ffd98c;background:rgba(232,181,48,.10);border-color:rgba(232,181,48,.3)}
-  .chip.c2{color:#7fe0a3;background:rgba(51,183,104,.12);border-color:rgba(51,183,104,.35)}
-  .chip.c3{color:#7fd0f5;background:rgba(46,155,230,.12);border-color:rgba(46,155,230,.35)}
-  .chip.c5{color:#1a1306;background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:var(--gold)}
+  .team{
+    display:flex;align-items:center;gap:12px;padding:11px 12px;cursor:default;
+    border-left:3px solid transparent;
+  }
+  .team + .team{border-top:1px dashed rgba(255,255,255,.05)}
+  .team .flag{font-size:1.5rem;line-height:1;width:1.7rem;text-align:center;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+  .team .name{flex:1;font-size:1.18rem;font-weight:600;letter-spacing:.01em}
+  .team .name.tbd{color:var(--ink-dim);font-style:italic;font-weight:400}
+  .team .score{font-family:"Anton";font-size:1.4rem;min-width:1.4ch;text-align:center;color:var(--ink-dim)}
+  .team.win{border-left-color:var(--gold);background:linear-gradient(90deg,var(--gold-soft),transparent)}
+  .team.win .name{color:var(--ink)}
+  .team.win .score{color:var(--gold)}
+  .team.lose{opacity:.5}
 
-  /* RANKING */
-  .rk{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
-  .rk:last-child{border-bottom:none}
-  .rk .pos{font-family:'Anton';font-size:20px;width:30px;text-align:center;color:var(--muted)}
-  .rk.top1 .pos{color:var(--gold2)} .rk.top2 .pos{color:#cfd6e2} .rk.top3 .pos{color:#cd7f43}
-  .rk .nm{font-family:'Oswald';font-weight:600;font-size:16px;flex:1;min-width:0;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .rk .pts{font-family:'Anton';font-size:22px;color:var(--gold2)}
-  .rk .pts small{font-family:'Oswald';font-size:11px;color:var(--muted);margin-left:3px;font-weight:600}
-  .rk.me{background:linear-gradient(90deg,rgba(46,155,230,.12),transparent)}
+  /* admin controls */
+  .adminrow{display:flex;gap:8px;padding:8px 12px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18)}
+  .adminrow button{
+    flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    font-family:inherit;font-weight:600;font-size:.92rem;letter-spacing:.04em;
+    padding:8px;border-radius:9px;cursor:pointer;transition:.15s
+  }
+  .adminrow button:hover{border-color:var(--gold);color:var(--gold)}
+  .adminrow button.clear{flex:0 0 auto;color:var(--ink-dim)}
+  .adminrow .sc{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+  .adminrow input{width:42px;text-align:center;background:#06170e;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 2px;font-family:inherit;font-size:1rem}
 
-  /* RULES */
-  .rule{display:flex;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
-  .rule .badge{width:42px;height:42px;flex:none;border-radius:11px;display:grid;place-items:center;font-size:20px;
-    border:1px solid var(--line)}
-  .rule .badge.g{background:rgba(51,183,104,.12)} .rule .badge.b{background:rgba(46,155,230,.12)}
-  .rule .badge.y{background:rgba(232,181,48,.12)}
-  .rule h3{font-family:'Oswald';text-transform:uppercase;letter-spacing:.6px;font-size:14px}
-  .rule p{margin:3px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
-  .rule .pts{margin-left:auto;font-family:'Anton';font-size:18px;align-self:center}
-  .rule .pts.g{color:var(--green)} .rule .pts.b{color:var(--blue)} .rule .pts.y{color:var(--gold2)}
-  .combos{width:100%;border-collapse:collapse;margin-top:4px}
-  .combos td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
-  .combos td:last-child{text-align:right;font-family:'Anton';font-size:16px;color:var(--gold2)}
+  /* ---------- Bracket (cuadro) view ---------- */
+  .cuadro-scroll{overflow-x:auto;padding:8px 2px 18px;-webkit-overflow-scrolling:touch}
+  .cuadro{display:flex;gap:14px;min-width:max-content;align-items:stretch}
+  .col{display:flex;flex-direction:column;justify-content:space-around;gap:10px;min-width:148px}
+  .col.final-col{justify-content:center}
+  .col h3{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;color:var(--ink-dim);text-align:center;margin:0 0 2px}
+  .mini{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden
+  }
+  .mini .t{display:flex;align-items:center;gap:7px;padding:7px 8px;font-size:.92rem}
+  .mini .t + .t{border-top:1px solid rgba(255,255,255,.05)}
+  .mini .t .f{font-size:1.05rem;width:1.2rem;text-align:center}
+  .mini .t .n{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+  .mini .t .n.tbd{color:var(--ink-dim);font-weight:400}
+  .mini .t .s{font-family:"Anton";font-size:.95rem;color:var(--ink-dim)}
+  .mini .t.win{background:var(--gold-soft)}
+  .mini .t.win .n{color:var(--gold)}
+  .mini .t.win .s{color:var(--gold)}
+  .champ{
+    text-align:center;border:1px solid var(--gold);border-radius:12px;padding:14px 10px;
+    background:linear-gradient(180deg,var(--gold-soft),transparent)
+  }
+  .champ .cup{font-size:2rem}
+  .champ .lbl{font-family:"Anton";text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-size:.8rem;margin-top:4px}
+  .champ .who{font-size:1.25rem;font-weight:700;margin-top:2px}
+  .champ .who.tbd{color:var(--ink-dim);font-weight:400;font-style:italic}
+  .hint{color:var(--ink-dim);font-size:.85rem;text-align:center;margin:6px 0 0;letter-spacing:.03em}
 
-  /* ADMIN */
-  .seg{display:flex;gap:6px;margin:0 0 14px;background:#0a1322;border:1px solid var(--line);border-radius:12px;padding:5px}
-  .seg button{flex:1;background:transparent;color:var(--muted);font-family:'Oswald';font-weight:600;
-    font-size:12px;text-transform:uppercase;letter-spacing:.6px;padding:9px;border-radius:9px}
-  .seg button.active{background:rgba(232,181,48,.14);color:var(--gold2)}
-  .mini{font-size:12px;color:var(--muted)}
-  .divider{height:1px;background:var(--line);margin:14px 0}
-  .listrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  a.link{color:var(--blue);cursor:pointer;text-decoration:underline}
-  .empty{text-align:center;padding:34px 16px;color:var(--muted)}
-  .empty .big{font-size:34px;margin-bottom:8px}
-  .gtbl{width:100%;border-collapse:collapse;font-size:13px}
-  .gtbl th{font-family:'Oswald';font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px;color:var(--muted);padding:7px 4px;text-align:center}
-  .gtbl th.lt{text-align:left;padding-left:12px}
-  .gtbl td{padding:9px 4px;text-align:center;border-top:1px solid rgba(255,255,255,.05)}
-  .gtbl td.lt{text-align:left;padding-left:12px;font-family:'Oswald';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:99%}
-  .gtbl td.pos{font-family:'Anton';width:28px;color:var(--muted2)}
-  .gtbl td.pos.qual{color:var(--green)} .gtbl td.pos.maybe{color:var(--gold2)}
-  .gtbl td.ptscol{font-family:'Anton';color:var(--gold2);width:42px}
-  .scroll-x{overflow-x:auto}
-  .note{background:rgba(46,155,230,.08);border:1px solid rgba(46,155,230,.25);border-radius:11px;
-    padding:10px 12px;font-size:12.5px;color:#bcd6ee;line-height:1.5}
-  .code{background:#0a1322;border:1px solid var(--line);border-radius:10px;padding:12px;
-    font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#cfe3f7;white-space:pre-wrap;overflow-x:auto;line-height:1.5}
-  ol.steps{padding-left:20px;margin:0} ol.steps li{margin:9px 0;line-height:1.5}
-  .modal-ov{position:fixed;inset:0;z-index:80;background:rgba(2,5,12,.74);backdrop-filter:blur(4px);
-    display:flex;align-items:center;justify-content:center;padding:16px}
-  .modal-card{width:100%;max-width:560px;max-height:86vh;display:flex;flex-direction:column;
-    background:linear-gradient(180deg,var(--panel),#0b1322);border:1px solid var(--line);
-    border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-  .modal-card textarea{flex:1;min-height:300px;background:#0a1322;color:var(--text);border:none;
-    border-top:1px solid var(--line);padding:14px;font-family:ui-monospace,Menlo,monospace;font-size:13px;
-    line-height:1.5;resize:none;outline:none}
+  /* ---------- Footer / admin ---------- */
+  footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .foot-txt{color:var(--ink-dim);font-size:.82rem;letter-spacing:.04em}
+  .adminbtn{background:none;border:1px solid var(--line);color:var(--ink-dim);font-family:inherit;font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.8rem;padding:7px 12px;border-radius:999px;cursor:pointer;transition:.15s}
+  .adminbtn:hover{border-color:var(--gold);color:var(--gold)}
+  .adminbtn.on{background:var(--gold);color:#06170e;border-color:var(--gold)}
+  .saving{font-size:.78rem;color:var(--gold);opacity:0;transition:.3s}
+  .saving.show{opacity:1}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<div class="wrap" id="app"></div>
-<div class="toast" id="toast"></div>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Al Momento</p>
+    <h1>Mundial 2026</h1>
+    <div class="sub">
+      <span class="badge">Eliminación directa</span>
+      <span class="host">La Bandita de Macul · 🇺🇸🇨🇦🇲🇽</span>
+    </div>
+    <div class="progress">
+      <span class="lbl"><b id="pct">0</b>/15 partidos definidos</span>
+      <div class="bar"><i id="barfill" style="width:0%"></i></div>
+      <span class="lbl" id="phase">16avos</span>
+    </div>
+  </header>
+
+  <nav class="rounds" id="tabs" role="tablist" aria-label="Rondas"></nav>
+
+  <main id="view"></main>
+
+  <footer>
+    <span class="foot-txt">Se actualiza con los resultados reales <span class="saving" id="saving">guardado ✓</span></span>
+    <button class="adminbtn" id="adminToggle">🔒 Modo admin</button>
+  </footer>
+</div>
 
 <script>
 /* ============================================================
-   POLLA DEL MUNDIAL — Firebase Firestore (sync real entre amigos)
+   DATOS — 16avos del Mundial 2026 (cuadro real proyectado).
+   Edita 'a' / 'b' (nombre + bandera) si la FIFA confirma un rival.
+   El resto de las rondas se llenan SOLAS con los ganadores.
    ============================================================ */
+const R32 = [
+  {id:'r32-1',  a:{n:'Alemania',f:'🇩🇪'},      b:{n:'Paraguay',f:'🇵🇾'},     date:'30 jun'},
+  {id:'r32-2',  a:{n:'Francia',f:'🇫🇷'},        b:{n:'Suecia',f:'🇸🇪'},       date:'1 jul'},
+  {id:'r32-3',  a:{n:'Sudáfrica',f:'🇿🇦'},      b:{n:'Canadá',f:'🇨🇦'},       date:'28 jun'},
+  {id:'r32-4',  a:{n:'Países Bajos',f:'🇳🇱'},   b:{n:'Marruecos',f:'🇲🇦'},    date:'29 jun'},
+  {id:'r32-5',  a:{n:'Portugal',f:'🇵🇹'},       b:{n:'Ghana',f:'🇬🇭'},        date:'2 jul'},
+  {id:'r32-6',  a:{n:'España',f:'🇪🇸'},         b:{n:'Austria',f:'🇦🇹'},      date:'2 jul'},
+  {id:'r32-7',  a:{n:'Estados Unidos',f:'🇺🇸'}, b:{n:'Bosnia',f:'🇧🇦'},       date:'1 jul'},
+  {id:'r32-8',  a:{n:'Por confirmar',f:'🏳️'},  b:{n:'Corea del Sur',f:'🇰🇷'},date:'3 jul'},
+  {id:'r32-9',  a:{n:'Brasil',f:'🇧🇷'},         b:{n:'Japón',f:'🇯🇵'},        date:'29 jun'},
+  {id:'r32-10', a:{n:'Costa de Marfil',f:'🇨🇮'},b:{n:'Noruega',f:'🇳🇴'},      date:'30 jun'},
+  {id:'r32-11', a:{n:'México',f:'🇲🇽'},         b:{n:'Ecuador',f:'🇪🇨'},      date:'1 jul'},
+  {id:'r32-12', a:{n:'Inglaterra',f:'🏴'},      b:{n:'Senegal',f:'🇸🇳'},      date:'2 jul'},
+  {id:'r32-13', a:{n:'Argentina',f:'🇦🇷'},      b:{n:'Cabo Verde',f:'🇨🇻'},   date:'30 jun'},
+  {id:'r32-14', a:{n:'Australia',f:'🇦🇺'},      b:{n:'Egipto',f:'🇪🇬'},       date:'1 jul'},
+  {id:'r32-15', a:{n:'Suiza',f:'🇨🇭'},          b:{n:'Irán',f:'🇮🇷'},         date:'2 jul'},
+  {id:'r32-16', a:{n:'Colombia',f:'🇨🇴'},       b:{n:'Croacia',f:'🇭🇷'},      date:'3 jul'},
+];
 
-/* ▼▼▼  PEGA AQUÍ LA CONFIG DE TU PROYECTO FIREBASE  ▼▼▼
-   (Firebase Console → Configuración del proyecto → Tus apps → Web → firebaseConfig) */
-const firebaseConfig = {
-  apiKey: "AIzaSyAM35Cw6oUIvgSYE_rO5eDy1AuYhp7NRVU",
-  authDomain: "polla-bandita.firebaseapp.com",
-  projectId: "polla-bandita",
-  storageBucket: "polla-bandita.firebasestorage.app",
-  messagingSenderId: "745101038960",
-  appId: "1:745101038960:web:b21277c93419516c682bb5"
-};
-/* ▲▲▲  No toques nada más abajo si no quieres  ▲▲▲ */
+const ADMIN_PIN = "1986"; // cámbialo antes de compartir con la Bandita
 
-let db = null;
-function firebaseReady(){ return firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('PEGA_AQUI')===-1; }
+const ROUNDS = [
+  {key:'r32', label:'16avos', title:'16avos de final', count:16, when:'28 jun – 3 jul'},
+  {key:'r16', label:'8vos',   title:'Octavos de final', count:8,  when:'4 – 7 jul'},
+  {key:'qf',  label:'4tos',   title:'Cuartos de final', count:4,  when:'9 – 12 jul'},
+  {key:'sf',  label:'Semis',  title:'Semifinales',      count:2,  when:'14 – 15 jul'},
+  {key:'f',   label:'Final',  title:'Final',            count:1,  when:'19 jul'},
+  {key:'cuadro', label:'Cuadro', title:'Cuadro completo', count:0, when:''},
+];
 
-const K = {
-  config:'config', standings:'standings', dayIndex:'dayindex',
-  day:d=>'day_'+d, pred:(d,p)=>'pred_'+d+'_'+p
-};
-const LOCK_MS = 5*60*1000; // apuestas cierran 5 min antes del inicio
+const TBD = {n:'Por definir', f:'⬜', tbd:true};
+let results = {};      // { matchId: {win:'a'|'b', sa:Number|null, sb:Number|null} }
+let isAdmin = false;
+let current = 'r32';
 
-function refFor(key){
-  if(key==='config')   return db.collection('meta').doc('config');
-  if(key==='standings')return db.collection('meta').doc('standings');
-  if(key==='dayindex') return db.collection('meta').doc('dayindex');
-  if(key.indexOf('day_')===0)  return db.collection('days').doc(key.slice(4));
-  if(key.indexOf('pred_')===0) return db.collection('preds').doc(key.slice(5));
-  return null;
+/* ---------- persistencia compartida (todos ven lo mismo) ---------- */
+async function loadResults(){
+  try{ const r = await window.storage.get('mundial2026:results', true); if(r&&r.value) results = JSON.parse(r.value); }
+  catch(e){ results = {}; }
 }
-async function sget(key){
+async function saveResults(){
   try{
-    const snap = await refFor(key).get();
-    if(!snap.exists) return null;
-    const data = snap.data();
-    if(key==='dayindex') return data.dates || [];
-    return data;
-  }catch(e){ console.error('get',key,e); return null; }
-}
-async function sset(key,val){
-  try{
-    const payload = (key==='dayindex') ? {dates: val} : val;
-    await refFor(key).set(payload);
-    return true;
-  }catch(e){ console.error('set',key,e); return false; }
-}
-async function sdel(key){ try{ await refFor(key).delete(); }catch(e){} }
-
-/* ---------- estado en memoria ---------- */
-let S = {
-  screen:'load',         // load | setup | login | app
-  tab:'partidos',        // partidos | ranking | reglas | admin
-  config:null,
-  me:null,               // {id,name}
-  isAdmin:false,
-  dayIndex:[],
-  selDate:null,
-  day:null,              // día seleccionado cargado
-  myPred:null,           // mi pronóstico del día seleccionado
-  allPreds:null,         // {playerId: pred}  (solo para reveal)
-  standings:null,
-  adminTab:'fecha',      // fecha | resultados | jugadores | ajustes
-  draftMatches:[],       // borrador al crear fecha
-};
-
-/* ---------- utilidades ---------- */
-const $ = id => document.getElementById(id);
-const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let toastTimer;
-function toast(msg){
-  const t=$('toast'); t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
-}
-function todayStr(){ const d=new Date(); return fmtDateKey(d); }
-function fmtDateKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function prettyDate(ds){
-  const [y,m,d]=ds.split('-').map(Number);
-  const dt=new Date(y,m-1,d);
-  const dias=['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
-  const mes=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-  return dias[dt.getDay()]+' '+d+' '+mes[m-1];
-}
-function fmtKO(iso){
-  if(!iso) return '';
-  const d=new Date(iso);
-  return d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',hour12:false});
-}
-function uid(){ return Math.random().toString(36).slice(2,9); }
-
-/* ---------- puntaje (según las reglas de las imágenes) ---------- */
-// Acumulativo: +2 tendencia, +1 diferencia, +1 por cada marcador exacto. Máx 5.
-function scoreOne(real, pick){
-  if(!pick || pick.h==null || pick.a==null) return {p:0,bd:[],noBet:true};
-  if(!real || real.h==null || real.a==null) return {p:null,bd:[]};
-  let p=0; const bd=[];
-  const rs=Math.sign(real.h-real.a), ps=Math.sign(pick.h-pick.a);
-  if(rs===ps){ p+=2; bd.push('tendencia'); }
-  if((real.h-real.a)===(pick.h-pick.a)){ p+=1; bd.push('diferencia'); }
-  if(real.h===pick.h){ p+=1; bd.push('local'); }
-  if(real.a===pick.a){ p+=1; bd.push('visita'); }
-  return {p:Math.min(p,5),bd,noBet:false};
-}
-function chipClass(p){
-  if(p==null) return 'c0'; if(p>=5) return 'c5'; if(p>=3) return 'c3'; if(p>=2) return 'c2'; if(p>=1) return 'c1'; return 'c0';
+    await window.storage.set('mundial2026:results', JSON.stringify(results), true);
+    const s=document.getElementById('saving'); s.classList.add('show'); setTimeout(()=>s.classList.remove('show'),1400);
+  }catch(e){ console.error('No se pudo guardar', e); }
 }
 
-/* ---------- lock helpers ---------- */
-function isLocked(m){ if(!m.kickoff) return false; return Date.now() >= (new Date(m.kickoff).getTime() - LOCK_MS); }
-function isStarted(m){ if(!m.kickoff) return false; return Date.now() >= new Date(m.kickoff).getTime(); }
-function lockCountdown(m){
-  if(!m.kickoff) return '';
-  const ms=(new Date(m.kickoff).getTime()-LOCK_MS)-Date.now();
-  if(ms<=0) return '';
-  const min=Math.floor(ms/60000), h=Math.floor(min/60);
-  if(h>=24) return 'Cierra en '+Math.floor(h/24)+'d';
-  if(h>0) return 'Cierra en '+h+'h '+(min%60)+'m';
-  return 'Cierra en '+min+'m';
+/* ---------- construir el árbol completo desde los resultados ---------- */
+function winnerTeam(m){
+  const r = results[m.id];
+  if(!r||!r.win) return null;
+  const t = m[r.win];
+  return (t && !t.tbd) ? t : null;
 }
-
-/* ============================================================
-   ARRANQUE
-   ============================================================ */
-(async function boot(){
-  if(!firebaseReady()){ S.screen='needconfig'; render(); return; }
-  try{
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    try{ db.settings({ experimentalAutoDetectLongPolling: true }); }catch(e){}
-  }catch(e){ console.error(e); S.screen='needconfig'; render(); return; }
-  S.config = await sget(K.config);
-  if(!S.config){ S.screen='setup'; render(); }
-  else { S.screen='login'; render(); }
-})();
-
-/* ============================================================
-   RENDER PRINCIPAL
-   ============================================================ */
-function render(){
-  const app=$('app');
-  if(S.screen==='load'){ app.innerHTML=headerHTML()+'<div class="empty"><div class="big">⚽</div>Cargando…</div>'; return; }
-  if(S.screen==='needconfig'){ app.innerHTML=headerHTML()+needConfigHTML(); return; }
-  if(S.screen==='setup'){ app.innerHTML=headerHTML()+setupHTML(); bindSetup(); return; }
-  if(S.screen==='login'){ app.innerHTML=headerHTML()+loginHTML(); bindLogin(); return; }
-  // app
-  let body='';
-  if(S.tab==='partidos') body=partidosHTML();
-  else if(S.tab==='ranking') body=rankingHTML();
-  else if(S.tab==='mundial') body=mundialHTML();
-  else if(S.tab==='reglas') body=reglasHTML();
-  else if(S.tab==='admin') body=adminHTML();
-  app.innerHTML = headerHTML(true) + body;
-  renderTabs();
-  bindByTab();
-}
-
-function headerHTML(showUser){
-  return `<header class="top">
-    <svg class="trophy" viewBox="0 0 250 168" xmlns="http://www.w3.org/2000/svg" aria-label="Mundial 26">
-      <defs>
-        <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFF3C4"/><stop offset=".4" stop-color="#FFD96B"/>
-          <stop offset=".75" stop-color="#E8B530"/><stop offset="1" stop-color="#A9791A"/>
-        </linearGradient>
-        <radialGradient id="globe" cx=".38" cy=".34" r=".8">
-          <stop offset="0" stop-color="#FFECAE"/><stop offset=".55" stop-color="#F1C64E"/>
-          <stop offset="1" stop-color="#BC8C1E"/>
-        </radialGradient>
-        <linearGradient id="numfill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#22324f"/><stop offset="1" stop-color="#0c1626"/>
-        </linearGradient>
-      </defs>
-      <g font-family="Anton, Impact, sans-serif" font-size="170" fill="url(#numfill)" stroke="#E8B530" stroke-width="2.2">
-        <text text-anchor="end" x="118" y="140">2</text>
-        <text text-anchor="start" x="132" y="140">6</text>
-      </g>
-      <g transform="translate(88,20) scale(0.62)">
-        <circle cx="60" cy="33" r="22" fill="url(#globe)" stroke="#8f6915" stroke-width="1.3"/>
-        <g stroke="#9c7218" stroke-width="1" fill="none" opacity=".55">
-          <path d="M60 11 V55 M38 33 H82"/>
-          <ellipse cx="60" cy="33" rx="9" ry="22"/>
-          <ellipse cx="60" cy="33" rx="22" ry="8.5"/>
-        </g>
-        <path d="M60 55 C43 60 35 75 41 93 C44 104 53 109 53 118 L67 118 C67 109 76 104 79 93 C85 75 77 60 60 55 Z" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
-        <path d="M60 58 C51 71 51 93 60 116 C69 93 69 71 60 58 Z" fill="#BC8C1E" opacity=".4"/>
-        <ellipse cx="60" cy="60" rx="17" ry="4.5" fill="#FFF3C4" opacity=".5"/>
-        <rect x="50" y="117" width="20" height="6" rx="2.5" fill="url(#gold)" stroke="#8f6915" stroke-width=".9"/>
-        <path d="M45 123 H75 L79 136 H41 Z" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
-        <rect x="37" y="136" width="46" height="9" rx="3.5" fill="url(#gold)" stroke="#8f6915" stroke-width="1.2"/>
-      </g>
-    </svg>
-    <h1 class="anton">POLLA <span class="gold">MUNDIAL</span></h1>
-    <div class="sub">La Bandita de Macul</div>
-    ${showUser?`<div style="margin-top:12px" class="row" >
-      <div class="pill">${S.me?('⚽ '+esc(S.me.name)):'Invitado'}</div>
-      ${S.isAdmin?'<div class="pill" style="color:var(--gold2);border-color:var(--line)">★ Admin</div>':''}
-      <button class="btn ghost sm" style="margin-left:auto" onclick="logout()">Salir</button>
-    </div>`:''}
-  </header>`;
-}
-
-function renderTabs(){
-  let nav=document.querySelector('nav.tabs');
-  if(!nav){ nav=document.createElement('nav'); nav.className='tabs'; document.body.appendChild(nav); }
-  const tabs=[['partidos','📋','Partidos'],['ranking','🏅','Ranking'],['mundial','🌎','Mundial'],['reglas','📖','Reglas']];
-  if(S.isAdmin) tabs.push(['admin','⚙️','Admin']);
-  nav.innerHTML=tabs.map(([id,ic,lb])=>
-    `<button class="${S.tab===id?'active':''}" onclick="go('${id}')"><span class="ic">${ic}</span>${lb}</button>`).join('');
-}
-
-function go(tab){ S.tab=tab;
-  if(tab==='partidos') loadDayView();
-  else if(tab==='ranking') loadStandings();
-  else if(tab==='mundial') openMundial();
-  else render();
-}
-
-/* ============================================================
-   SETUP INICIAL (primera vez)
-   ============================================================ */
-function needConfigHTML(){
-  return `<div class="panel pad">
-    <div class="ph" style="margin:-16px -16px 14px">
-      <span class="dot"></span><h2>Falta conectar Firebase</h2></div>
-    <p class="mini" style="margin-top:0">Esta app guarda los datos en tu propio Firebase (gratis). Conéctalo una sola vez:</p>
-    <ol class="steps">
-      <li>Entra a <b>console.firebase.google.com</b> y crea un proyecto (gratis).</li>
-      <li>Menú <b>Compilación → Firestore Database → Crear base de datos</b> (modo de prueba).</li>
-      <li>En <b>⚙️ Configuración del proyecto → Tus apps</b>, agrega una app <b>Web (&lt;/&gt;)</b> y copia el bloque <code>firebaseConfig</code>.</li>
-      <li>Abre este archivo .html con un editor y <b>pega tu config</b> arriba, donde dice <code>PEGA_AQUI</code>.</li>
-      <li>En Firestore → pestaña <b>Reglas</b>, pega esto y publica:</li>
-    </ol>
-    <div class="code">rules_version = '2';
-service cloud.firestore {
-  match /databases/{db}/documents {
-    match /{doc=**} { allow read, write: if true; }
-  }
-}</div>
-    <div class="note" style="margin-top:12px">Sube el archivo a <b>GitHub Pages</b> (o ábrelo con un servidor local). Recarga y verás la pantalla de configuración de la polla.</div>
-  </div>`;
-}
-
-function setupHTML(){
-  return `<div class="panel pad">
-    <div class="note" style="margin-bottom:14px">Configuración inicial — la hace una sola persona (el organizador). Después todos entran con su nombre.</div>
-    <div class="field">
-      <label>PIN de administrador (4 dígitos)</label>
-      <input class="input" id="su_pin" inputmode="numeric" maxlength="6" placeholder="Ej: 2026">
-    </div>
-    <div class="field">
-      <label>Los 14 jugadores (un nombre por línea)</label>
-      <textarea class="input" id="su_players" rows="9" placeholder="Carlos&#10;Pedro&#10;Diego&#10;..."></textarea>
-    </div>
-    <button class="btn" onclick="doSetup()">Crear la polla</button>
-  </div>`;
-}
-function bindSetup(){}
-async function doSetup(){
-  const pin=$('su_pin').value.trim();
-  const names=$('su_players').value.split('\n').map(s=>s.trim()).filter(Boolean);
-  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4 a 6 dígitos)');
-  if(names.length<2) return toast('Agrega al menos 2 jugadores');
-  if(names.length>14) return toast('Máximo 14 jugadores');
-  const players=names.map(n=>({id:uid(),name:n,pin:null}));
-  const cfg={adminPin:pin,players,createdAt:Date.now()};
-  const ok=await sset(K.config,cfg);
-  if(!ok) return toast('No se pudo guardar, reintenta');
-  await sset(K.dayIndex,[]);
-  await sset(K.standings,{perDay:{},totals:{}});
-  S.config=cfg; S.screen='login'; toast('¡Polla creada!'); render();
-}
-
-/* ============================================================
-   LOGIN
-   ============================================================ */
-function loginHTML(){
-  const opts=S.config.players.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
-  return `<div class="panel pad">
-    <div class="field">
-      <label>¿Quién eres?</label>
-      <select class="input" id="lg_player"><option value="">Elige tu nombre…</option>${opts}</select>
-    </div>
-    <div class="field">
-      <label>Tu PIN privado</label>
-      <input class="input" id="lg_pin" inputmode="numeric" maxlength="6" placeholder="4 a 6 dígitos">
-      <div class="mini" style="margin-top:6px">La primera vez que entras, tu PIN queda guardado y será solo tuyo.</div>
-    </div>
-    <button class="btn" onclick="doLogin()">Entrar</button>
-    <div class="divider"></div>
-    <button class="btn ghost" onclick="adminLogin()">Entrar como administrador</button>
-  </div>`;
-}
-function bindLogin(){}
-async function doLogin(){
-  S.config=await sget(K.config); // refresca por si otro cambió algo
-  const pid=$('lg_player').value, pin=$('lg_pin').value.trim();
-  if(!pid) return toast('Elige tu nombre');
-  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4 a 6 dígitos)');
-  const pl=S.config.players.find(p=>p.id===pid);
-  if(!pl) return toast('Jugador no encontrado');
-  if(!pl.pin){
-    pl.pin=pin; await sset(K.config,S.config); toast('PIN guardado, ¡bienvenido!');
-  } else if(pl.pin!==pin){
-    return toast('PIN incorrecto');
-  }
-  S.me={id:pl.id,name:pl.name}; S.isAdmin=false; S.screen='app'; S.tab='partidos';
-  toast('Entrando…');
-  await loadDayView();
-}
-async function adminLogin(){
-  const pin=prompt('PIN de administrador:');
-  if(pin==null) return;
-  if(pin.trim()!==S.config.adminPin) return toast('PIN de admin incorrecto');
-  S.isAdmin=true; S.me=null; S.screen='app'; S.tab='admin'; S.adminTab='fecha';
-  S.dayIndex=(await sget(K.dayIndex))||[];
-  render();
-}
-function logout(){ S.me=null; S.isAdmin=false; S.screen='login'; const n=document.querySelector('nav.tabs'); if(n) n.remove(); render(); }
-
-/* ============================================================
-   CARGA DE DATOS DE UN DÍA
-   ============================================================ */
-async function loadDayView(){
-  const [dayIndex, standings] = await Promise.all([ sget(K.dayIndex), sget(K.standings) ]);
-  S.dayIndex = dayIndex || [];
-  S.standings = standings || {perDay:{},totals:{}};
-  if(!S.selDate){
-    if(S.dayIndex.includes(todayStr())) S.selDate=todayStr();
-    else S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
-  }
-  if(!S.selDate){ S.day=null; S.myPred=null; S.allPreds=null; render(); return; }
-  const [day, myPred] = await Promise.all([
-    sget(K.day(S.selDate)),
-    S.me ? sget(K.pred(S.selDate,S.me.id)) : Promise.resolve(null)
-  ]);
-  S.day=day; S.myPred=myPred;
-  render(); // pinta de inmediato; lo demás carga de fondo
-  if(day){
-    const ids=S.config.players.map(p=>p.id);
-    const preds=await Promise.all(ids.map(id=>sget(K.pred(S.selDate,id))));
-    const ap={}; ids.forEach((id,i)=>ap[id]=preds[i]); S.allPreds=ap;
-    if(S.screen==='app' && S.tab==='partidos') render();
-  } else { S.allPreds=null; }
-}
-async function loadStandings(){
-  S.standings=(await sget(K.standings))||{perDay:{},totals:{}};
-  S.config=await sget(K.config)||S.config;
-  render();
-}
-
-/* ============================================================
-   TABLA DEL MUNDIAL (datos públicos openfootball, sin clave)
-   ============================================================ */
-const WC_FEED='https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
-let wcCache=null, wcFetchedAt=0;
-const TEAM_ES={
-  "Mexico":"México","South Africa":"Sudáfrica","South Korea":"Corea del Sur","Czech Republic":"Rep. Checa","Czechia":"Chequia",
-  "United States":"EE.UU.","USA":"EE.UU.","Canada":"Canadá","Brazil":"Brasil","Spain":"España","Germany":"Alemania","France":"Francia",
-  "England":"Inglaterra","Netherlands":"Países Bajos","Belgium":"Bélgica","Croatia":"Croacia","Italy":"Italia","Peru":"Perú",
-  "Japan":"Japón","Australia":"Australia","Saudi Arabia":"Arabia Saudita","Iran":"Irán","Qatar":"Catar","Morocco":"Marruecos",
-  "Senegal":"Senegal","Ghana":"Ghana","Nigeria":"Nigeria","Cameroon":"Camerún","Egypt":"Egipto","Algeria":"Argelia","Tunisia":"Túnez",
-  "Ivory Coast":"Costa de Marfil","Switzerland":"Suiza","Denmark":"Dinamarca","Sweden":"Suecia","Norway":"Noruega","Poland":"Polonia",
-  "Serbia":"Serbia","Austria":"Austria","Turkey":"Turquía","Ukraine":"Ucrania","Scotland":"Escocia","Wales":"Gales","Greece":"Grecia",
-  "New Zealand":"Nueva Zelanda","Costa Rica":"Costa Rica","Panama":"Panamá","Honduras":"Honduras","Jamaica":"Jamaica",
-  "Cape Verde":"Cabo Verde","Jordan":"Jordania","Uzbekistan":"Uzbekistán","Curacao":"Curazao","Curaçao":"Curazao","Haiti":"Haití",
-  "DR Congo":"RD Congo","Mali":"Malí","Burkina Faso":"Burkina Faso","Angola":"Angola","New Caledonia":"Nueva Caledonia",
-  "Portugal":"Portugal","Argentina":"Argentina","Uruguay":"Uruguay","Colombia":"Colombia","Ecuador":"Ecuador","Paraguay":"Paraguay","Chile":"Chile"
-};
-function teamES(t){ return TEAM_ES[t]||t; }
-async function loadWorldCup(force){
-  if(wcCache && !force && (Date.now()-wcFetchedAt < 5*60*1000)) return wcCache;
-  const res=await fetch(WC_FEED,{cache:'no-store'});
-  if(!res.ok) throw new Error('http '+res.status);
-  const data=await res.json();
-  wcCache=data; wcFetchedAt=Date.now();
-  return data;
-}
-function wcRow(t){ return {team:t,pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0}; }
-function computeGroups(data){
-  const groups={};
-  (data.matches||[]).forEach(m=>{
-    if(!m.group||!/^Group/i.test(m.group)) return;
-    const g=groups[m.group]=groups[m.group]||{};
-    const t1=g[m.team1]=g[m.team1]||wcRow(m.team1);
-    const t2=g[m.team2]=g[m.team2]||wcRow(m.team2);
-    const ft=m.score&&m.score.ft;
-    if(!ft||ft.length<2||ft[0]==null) return;
-    const a=ft[0],b=ft[1];
-    t1.pj++;t2.pj++;t1.gf+=a;t1.gc+=b;t2.gf+=b;t2.gc+=a;
-    if(a>b){t1.g++;t2.p++;t1.pts+=3;} else if(a<b){t2.g++;t1.p++;t2.pts+=3;} else {t1.e++;t2.e++;t1.pts++;t2.pts++;}
-  });
-  const out={};
-  Object.keys(groups).sort().forEach(gn=>{
-    out[gn]=Object.values(groups[gn]).map(r=>Object.assign({},r,{dg:r.gf-r.gc}))
-      .sort((x,y)=>y.pts-x.pts||y.dg-x.dg||y.gf-x.gf||x.team.localeCompare(y.team));
-  });
-  return out;
-}
-async function openMundial(){
-  render();
-  try{
-    const data=await loadWorldCup(S.wcForce); S.wcForce=false;
-    S.wcGroups=computeGroups(data); S.wcError=false; S.wcUpdated=wcFetchedAt;
-  }catch(e){ if(!S.wcGroups) S.wcError=true; }
-  if(S.tab==='mundial') render();
-}
-function refreshMundial(){ S.wcForce=true; openMundial(); }
-function mundialHTML(){
-  if(S.wcError && !wcCache){
-    return `<div class="panel pad empty"><div class="big">📡</div>No se pudo cargar la tabla del Mundial.<br>
-      <span class="mini">Revisa tu conexión e inténtalo de nuevo.</span><br>
-      <button class="btn ghost sm" style="margin-top:14px" onclick="refreshMundial()">Reintentar</button></div>`;
-  }
-  if(!wcCache){
-    return `<div class="panel pad empty"><div class="big">🌎</div>Cargando datos del Mundial…</div>`;
-  }
-  const view=S.wcView||'grupos';
-  const upd=S.wcUpdated?new Date(S.wcUpdated).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}):'';
-  const seg=`<div class="row" style="margin:14px 0 12px;gap:8px">
-      <div class="seg" style="flex:1;margin:0">
-        <button class="${view==='grupos'?'active':''}" onclick="setWcView('grupos')">Grupos</button>
-        <button class="${view==='elim'?'active':''}" onclick="setWcView('elim')">Eliminación</button>
-      </div>
-      <button class="btn ghost sm" onclick="refreshMundial()">↻</button>
-    </div>`;
-  let content;
-  if(view==='elim'){
-    content=knockoutHTML();
-  } else {
-    const groups=S.wcGroups||computeGroups(wcCache);
-    content=`<div class="mini" style="margin-bottom:10px"><span style="color:var(--green)">●</span> 1°-2° clasifican &nbsp;<span style="color:var(--gold2)">●</span> 3° (mejores terceros)</div>`
-      + Object.keys(groups).map(gn=>groupTableHTML(gn,groups[gn])).join('');
-  }
-  return seg+content+`<div class="mini center" style="margin:8px 0 0">Datos: openfootball (dominio público). Se actualiza ~1 vez al día${upd?` · visto ${upd}`:''}.</div>`;
-}
-function setWcView(v){ S.wcView=v; render(); }
-const KO_ORDER=[['Round of 32','Dieciseisavos'],['Round of 16','Octavos de final'],['Quarter-final','Cuartos de final'],['Semi-final','Semifinales'],['Match for third place','Tercer lugar'],['Final','Final']];
-function computeKnockout(data){
-  const byRound={};
-  (data.matches||[]).forEach(m=>{ const r=m.round||''; if(KO_ORDER.some(o=>o[0]===r)) (byRound[r]=byRound[r]||[]).push(m); });
-  return byRound;
-}
-function koTeam(name){
-  if(name==null||/[\/0-9]/.test(name)) return `<span style="color:var(--muted2);font-weight:500">${esc(name||'?')}</span>`;
-  return esc(teamES(name));
-}
-function koMatchRow(m){
-  const ft=m.score&&m.score.ft;
-  const played=ft&&ft.length>=2&&ft[0]!=null;
-  const mid = played ? `<b style="font-family:'Anton';color:var(--gold2);font-size:20px">${ft[0]} - ${ft[1]}</b>` : `<span class="vs">vs</span>`;
-  return `<div class="match" style="padding:11px 14px">
-    <div class="mtop"><span class="ko">${m.date?prettyDate(m.date):'Por definir'}</span>${played?'<span class="pill lock">Final</span>':''}</div>
-    <div class="teams">
-      <div class="team h">${koTeam(m.team1)}</div>
-      <div class="score-in">${mid}</div>
-      <div class="team a">${koTeam(m.team2)}</div>
-    </div></div>`;
-}
-function knockoutHTML(){
-  const byRound=computeKnockout(wcCache||{matches:[]});
-  const blocks=KO_ORDER.filter(o=>byRound[o[0]]&&byRound[o[0]].length).map(o=>{
-    const rows=byRound[o[0]].map(koMatchRow).join('');
-    return `<div class="panel" style="margin-bottom:12px">
-      <div class="ph"><span class="dot"></span><h2>${o[1]}</h2><span class="meta">${byRound[o[0]].length} partido${byRound[o[0]].length!==1?'s':''}</span></div>
-      ${rows}</div>`;
-  }).join('');
-  return blocks || '<div class="panel pad empty mini">El cuadro aún no está disponible.</div>';
-}
-function groupTableHTML(name, rows){
-  const tn=name.replace(/^Group\s*/i,'Grupo ');
-  const body=rows.map((r,i)=>{
-    const pos=i+1; const cls=pos<=2?'qual':(pos===3?'maybe':'');
-    return `<tr>
-      <td class="pos ${cls}">${pos}</td>
-      <td class="lt">${esc(teamES(r.team))}</td>
-      <td>${r.pj}</td>
-      <td>${r.dg>0?'+':''}${r.dg}</td>
-      <td class="ptscol">${r.pts}</td>
-    </tr>`;
-  }).join('');
-  return `<div class="panel" style="margin-bottom:12px">
-    <div class="ph"><span class="dot"></span><h2>${esc(tn)}</h2></div>
-    <table class="gtbl">
-      <thead><tr><th>#</th><th class="lt">Equipo</th><th>PJ</th><th>DG</th><th>Pts</th></tr></thead>
-      <tbody>${body}</tbody>
-    </table></div>`;
-}
-
-/* ============================================================
-   PESTAÑA PARTIDOS
-   ============================================================ */
-function dateNav(){
-  if(!S.dayIndex.length) return '';
-  const opts=S.dayIndex.map(d=>`<option value="${d}" ${d===S.selDate?'selected':''}>${prettyDate(d)}</option>`).join('');
-  return `<div class="row" style="margin:14px 0 12px">
-    <select class="input" style="flex:1" onchange="changeDay(this.value)">${opts}</select>
-    <button class="btn ghost sm" onclick="loadDayView()">↻</button>
-  </div>`;
-}
-async function changeDay(d){ S.selDate=d; await loadDayView(); }
-
-function partidosHTML(){
-  if(!S.dayIndex.length){
-    return `<div class="panel pad empty"><div class="big">📭</div>
-      Aún no hay fechas publicadas.<br><span class="mini">El administrador debe publicar los partidos del día.</span></div>`;
-  }
-  if(!S.day){ return dateNav()+`<div class="panel pad empty">No se pudo cargar la fecha.</div>`; }
-
-  const matches=S.day.matches||[];
-  const anyOpen=matches.some(m=>!isLocked(m));
-  let cards=matches.map((m,i)=>matchCard(m,i)).join('');
-  let saveBar = anyOpen ? `<button class="btn" style="margin-top:14px" onclick="savePicks()">Guardar mis pronósticos</button>
-    <div class="mini center" style="margin-top:8px">Solo se guardan los partidos abiertos. Cada uno cierra 5 min antes de empezar.</div>`
-    : `<div class="note" style="margin-top:14px">Todos los partidos de esta fecha están cerrados. Ya puedes ver los pronósticos de todos. 👀</div>`;
-
-  return dateNav()+`<div class="panel">
-      <div class="ph"><span class="dot"></span><h2>${prettyDate(S.selDate)}</h2>
-      <span class="meta">${matches.length} partido${matches.length!==1?'s':''}</span></div>
-      ${cards}
-    </div>${saveBar}
-    <button class="btn ghost" style="margin-top:12px" onclick="shareConsolidado('${S.selDate}')">📲 Compartir apuestas en WhatsApp</button>`;
-}
-
-function matchCard(m,i){
-  const locked=isLocked(m);
-  const real=S.day.results?.[m.id];
-  const hasReal=real && real.h!=null;
-  const mine=S.myPred?.picks?.[m.id]||{};
-  let statusPill;
-  if(hasReal) statusPill='<span class="pill lock">Finalizado</span>';
-  else if(isStarted(m)) statusPill='<span class="pill live">● En juego</span>';
-  else if(locked) statusPill='<span class="pill lock">Cerrado</span>';
-  else statusPill=`<span class="pill open">${lockCountdown(m)||'Abierto'}</span>`;
-
-  const disabled=locked?'disabled':'';
-  const hv=mine.h!=null?mine.h:'';
-  const av=mine.a!=null?mine.a:'';
-
-  let realRow = hasReal ? `<div class="center" style="margin-top:6px">
-      <span class="real-badge">Resultado real &nbsp;${real.h} - ${real.a}</span></div>` : '';
-
-  let reveal='';
-  if(locked){
-    reveal=`<div class="reveal" id="rev_${m.id}">${revealRows(m,real,hasReal)}</div>`;
-  }
-
-  return `<div class="match">
-    <div class="mtop"><span class="ko">${fmtKO(m.kickoff)||'Hora por confirmar'}</span>${statusPill}</div>
-    <div class="teams">
-      <div class="team h">${esc(m.home)}</div>
-      <div class="score-in">
-        <input class="sin" data-mid="${m.id}" data-side="h" inputmode="numeric" maxlength="2" value="${hv}" ${disabled}>
-        <span class="vs">vs</span>
-        <input class="sin" data-mid="${m.id}" data-side="a" inputmode="numeric" maxlength="2" value="${av}" ${disabled}>
-      </div>
-      <div class="team a">${esc(m.away)}</div>
-    </div>
-    ${realRow}
-    ${reveal}
-  </div>`;
-}
-
-function revealRows(m,real,hasReal){
-  const rows=S.config.players.map(pl=>{
-    const pred=S.allPreds?.[pl.id];
-    const pick=pred?.picks?.[m.id];
-    const isMe=S.me&&pl.id===S.me.id;
-    let pickStr = (pick&&pick.h!=null)?`${pick.h}-${pick.a}`:'—';
-    let chip='';
-    if(hasReal){
-      const sc=scoreOne(real,pick);
-      chip=`<span class="chip ${chipClass(sc.p)}">${sc.noBet?'0':sc.p}</span>`;
-    } else {
-      chip=`<span class="chip c0">·</span>`;
+function buildTree(){
+  const tree = {r32:[], r16:[], qf:[], sf:[], f:[]};
+  tree.r32 = R32.map(m=>({...m}));
+  const advance = (src, prefix) => {
+    const out=[];
+    for(let i=0;i<src.length;i+=2){
+      out.push({
+        id: prefix+(i/2+1),
+        a: winnerTeam(src[i])   || {...TBD},
+        b: winnerTeam(src[i+1]) || {...TBD},
+        date:''
+      });
     }
-    return `<div class="rline">
-      <div class="nm">${isMe?'<b style="color:var(--gold2)">Tú</b>':esc(pl.name)}</div>
-      <span class="rpick">${pickStr}</span>${chip}
-    </div>`;
-  }).join('');
-  return `<div class="mini" style="margin:2px 0 4px;text-transform:uppercase;letter-spacing:1px;color:var(--muted2)">Pronósticos${hasReal?' · puntos':''}</div>`+rows;
+    return out;
+  };
+  tree.r16 = advance(tree.r32,'r16-');
+  tree.qf  = advance(tree.r16,'qf-');
+  tree.sf  = advance(tree.qf,'sf-');
+  tree.f   = advance(tree.sf,'f-');
+  return tree;
 }
 
-async function savePicks(){
-  if(!S.me) return;
-  const inputs=document.querySelectorAll('.sin[data-mid]');
-  const picks=Object.assign({},S.myPred?.picks||{});
-  let saved=0, partial=0;
-  // agrupar por match
-  const byMatch={};
-  inputs.forEach(inp=>{
-    const mid=inp.dataset.mid, side=inp.dataset.side;
-    if(inp.disabled) return; // cerrado: no tocar
-    byMatch[mid]=byMatch[mid]||{};
-    const v=inp.value.trim();
-    byMatch[mid][side]=v===''?null:Math.max(0,Math.min(30,parseInt(v,10)||0));
-  });
-  for(const mid in byMatch){
-    const h=byMatch[mid].h, a=byMatch[mid].a;
-    if(h!=null && a!=null){ picks[mid]={h,a}; saved++; }
-    else if(h!=null || a!=null){ partial++; delete picks[mid]; }
-    else { delete picks[mid]; }
-  }
-  const rec={picks,updatedAt:Date.now()};
-  const ok=await sset(K.pred(S.selDate,S.me.id),rec);
-  if(!ok) return toast('No se pudo guardar, reintenta');
-  S.myPred=rec; S.allPreds[S.me.id]=rec;
-  toast(partial? `Guardado (${saved}). ${partial} quedó incompleto = Sin Apuesta` : `Guardado ✓ (${saved} partido${saved!==1?'s':''})`);
+/* ---------- estado de un partido ---------- */
+function statusOf(m){
+  const r = results[m.id];
+  const ready = !m.a.tbd && !m.b.tbd;
+  if(r && r.win) return 'done';
+  if(r && (r.sa!=null || r.sb!=null)) return 'live';
+  return ready ? 'prog' : 'tbd';
 }
 
-/* ============================================================
-   PESTAÑA RANKING
-   ============================================================ */
-function rankingHTML(){
-  const st=S.standings||{totals:{},perDay:{}};
-  const players=S.config.players.map(p=>({...p,pts:st.totals[p.id]||0}));
-  players.sort((a,b)=>b.pts-a.pts || a.name.localeCompare(b.name));
-  const playedDays=Object.keys(st.perDay||{}).length;
-  if(playedDays===0 && players.every(p=>p.pts===0)){
-    var note=`<div class="empty"><div class="big">🏁</div>El ranking aparece cuando se ingresen resultados.</div>`;
-  }
-  let rows=players.map((p,i)=>{
-    const top=i<3?` top${i+1}`:'';
-    const me=S.me&&p.id===S.me.id?' me':'';
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    return `<div class="rk${top}${me}">
-      <div class="pos">${medal}</div>
-      <div class="nm">${esc(p.name)}${me?' <small style="color:var(--blue)">(tú)</small>':''}</div>
-      <div class="pts">${p.pts}<small>pts</small></div>
-    </div>`;
-  }).join('');
-  return `<div class="row" style="margin:14px 0 12px">
-      <div class="mini">Fechas jugadas: <b style="color:var(--text)">${playedDays}</b></div>
-      <button class="btn ghost sm" style="margin-left:auto" onclick="loadStandings()">↻ Actualizar</button>
-    </div>
-    <div class="panel">
-      <div class="ph"><span class="dot"></span><h2>Ranking general</h2><span class="meta">Acumulado</span></div>
-      ${note||rows}
-    </div>`;
+/* ============================ RENDER ============================ */
+function el(tag, cls, html){const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+
+function teamRow(m, side){
+  const t = m[side];
+  const r = results[m.id]||{};
+  const won = r.win===side;
+  const lost = r.win && r.win!==side;
+  const row = el('div','team'+(won?' win':'')+(lost?' lose':''));
+  row.innerHTML =
+    `<span class="flag">${t.f}</span>`+
+    `<span class="name${t.tbd?' tbd':''}">${t.n}</span>`+
+    `<span class="score">${ (side==='a'?r.sa:r.sb) ?? '–'}</span>`;
+  return row;
 }
 
-/* ============================================================
-   PESTAÑA REGLAS
-   ============================================================ */
-function reglasHTML(){
-  return `<div class="panel" style="margin-top:14px">
-    <div class="ph"><span class="dot"></span><h2>Sistema de puntaje</h2><span class="meta">Acumulativo · máx 5</span></div>
-    <div class="rule"><div class="badge g">🎯</div><div><h3>Tendencia correcta</h3>
-      <p>Aciertas ganador o empate.</p></div><div class="pts g">+2</div></div>
-    <div class="rule"><div class="badge b">⚖️</div><div><h3>Diferencia de goles</h3>
-      <p>Aciertas la diferencia entre los goles.</p></div><div class="pts b">+1</div></div>
-    <div class="rule"><div class="badge y">⚽</div><div><h3>Marcador exacto</h3>
-      <p>1 punto por cada marcador acertado (local y/o visita).</p></div><div class="pts y">+1×</div></div>
-  </div>
-  <div class="panel" style="margin-top:14px">
-    <div class="ph"><span class="dot"></span><h2>Combinaciones</h2></div>
-    <table class="combos">
-      <tr><td>Nada correcto</td><td style="color:var(--muted)!important">0</td></tr>
-      <tr><td>Solo un marcador exacto</td><td>1</td></tr>
-      <tr><td>Solo tendencia</td><td>2</td></tr>
-      <tr><td>Tendencia + un marcador exacto</td><td>3</td></tr>
-      <tr><td>Tendencia + diferencia</td><td>3</td></tr>
-      <tr><td>Marcador exacto total (ambos goles)</td><td>5</td></tr>
-    </table>
-  </div>
-  <div class="panel" style="margin-top:14px">
-    <div class="ph"><span class="dot"></span><h2>Cómo se juega</h2></div>
-    <div style="padding:14px">
-      <div class="note">1. Se publican los partidos del día. &nbsp;2. Cada uno ingresa su pronóstico <b>en privado</b>. &nbsp;3. Cada partido cierra 5 min antes de empezar. &nbsp;4. Al cerrar, se revelan los pronósticos de todos. &nbsp;5. Se ingresan los resultados y el ranking se actualiza solo.</div>
-    </div>
-  </div>`;
-}
+function matchCard(m, roundLabel){
+  const card = el('div','match');
+  const st = statusOf(m);
+  const pill = st==='done'?'<span class="pill done">Final</span>'
+            : st==='live'?'<span class="pill live">En vivo</span>'
+            : st==='tbd' ?'<span class="pill prog">Por definir</span>'
+            :             '<span class="pill prog">Programado</span>';
+  card.appendChild(el('div','topbar',`<span>${roundLabel}${m.date?' · '+m.date:''}</span>${pill}`));
+  card.appendChild(teamRow(m,'a'));
+  card.appendChild(teamRow(m,'b'));
 
-/* ============================================================
-   PESTAÑA ADMIN
-   ============================================================ */
-function adminHTML(){
-  const seg=[['fecha','Nueva fecha'],['resultados','Resultados'],['jugadores','Jugadores'],['ajustes','Ajustes']];
-  const segHTML=`<div class="seg">${seg.map(([id,l])=>`<button class="${S.adminTab===id?'active':''}" onclick="adminGo('${id}')">${l}</button>`).join('')}</div>`;
-  let body='';
-  if(S.adminTab==='fecha') body=adminFecha();
-  else if(S.adminTab==='resultados') body=adminResultados();
-  else if(S.adminTab==='jugadores') body=adminJugadores();
-  else body=adminAjustes();
-  return `<div style="margin-top:14px">${segHTML}${body}</div>`;
-}
-async function adminGo(t){
-  S.adminTab=t;
-  if(t==='fecha'){ S.dayIndex=(await sget(K.dayIndex))||[]; }
-  if(t==='resultados'){
-    S.dayIndex=(await sget(K.dayIndex))||[];
-    if(!S.selDate||!S.dayIndex.includes(S.selDate)) S.selDate=S.dayIndex[S.dayIndex.length-1]||null;
-    if(S.selDate) S.day=await sget(K.day(S.selDate));
-  }
-  if(t==='ajustes'){ S.standings=(await sget(K.standings))||{perDay:{},totals:{}}; }
-  render();
-}
-
-/* --- Admin: crear fecha --- */
-function adminFecha(){
-  const rows=S.draftMatches.map((m,i)=>`
-    <div class="panel pad" style="margin-bottom:10px">
-      <div class="row" style="justify-content:space-between"><b class="osw">Partido ${i+1}</b>
-        <button class="link" onclick="rmDraft(${i})">Quitar</button></div>
-      <div class="grid2" style="margin-top:8px">
-        <input class="input" placeholder="Local" value="${esc(m.home)}" oninput="setDraft(${i},'home',this.value)">
-        <input class="input" placeholder="Visita" value="${esc(m.away)}" oninput="setDraft(${i},'away',this.value)">
-      </div>
-      <div class="field" style="margin:10px 0 0">
-        <label>Inicio del partido (fecha y hora)</label>
-        <input class="input" type="datetime-local" value="${m.kickoff||''}" oninput="setDraft(${i},'kickoff',this.value)">
-      </div>
-    </div>`).join('');
-  const editing = S.fechaDate && S.dayIndex.includes(S.fechaDate);
-  return importBlockHTML()
-    + existingDaysHTML()
-    + `
-    <div class="divider" style="margin:18px 0 12px"></div>
-    <div class="row" style="margin-bottom:10px;justify-content:space-between">
-      <b class="osw">${editing?('✏️ Editando '+prettyDate(S.fechaDate)):'…o agrega los partidos manualmente'}</b>
-      ${(S.draftMatches.length||editing)?'<button class="btn ghost sm" onclick="cancelEdit()">Limpiar</button>':''}
-    </div>
-    <div class="panel pad">
-      <div class="field" style="margin-top:0">
-        <label>Fecha de la jornada</label>
-        <input class="input" type="date" id="af_date" value="${S.fechaDate||todayStr()}" oninput="S.fechaDate=this.value">
-      </div>
-      <div class="note">La hora de inicio define cuándo cierra cada apuesta (5 min antes).</div>
-    </div>
-    <div style="margin-top:12px">${rows||'<div class="panel pad empty mini">Sin partidos aún.</div>'}</div>
-    <button class="btn ghost" style="margin-top:10px" onclick="addDraft()">+ Agregar partido</button>
-    <button class="btn" style="margin-top:10px" onclick="publishDay()">${editing?'Guardar cambios':'Publicar fecha'}</button>`;
-}
-function existingDaysHTML(){
-  if(!S.dayIndex || !S.dayIndex.length) return '';
-  const rows=S.dayIndex.slice().sort().map(d=>`
-    <div class="listrow">
-      <b class="osw" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prettyDate(d)}</b>
-      <button class="btn ghost sm" onclick="editFecha('${d}')">Editar</button>
-      <button class="btn danger sm" onclick="deleteFecha('${d}')">Eliminar</button>
-    </div>`).join('');
-  return `<div class="divider" style="margin:18px 0 12px"></div>
-    <div class="panel pad">
-      <div class="row" style="justify-content:space-between"><b class="osw">🗓️ Fechas publicadas</b><span class="pill">${S.dayIndex.length}</span></div>
-      <p class="mini" style="margin:8px 0 2px">Toca <b>Editar</b> para corregir partidos u horas, o <b>Eliminar</b> para borrar la fecha.</p>
-      ${rows}
-    </div>`;
-}
-function isoToLocalInput(iso){
-  if(!iso) return '';
-  const d=new Date(iso); const p=n=>String(n).padStart(2,'0');
-  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
-}
-async function editFecha(date){
-  const day=await sget(K.day(date));
-  if(!day){ toast('No se encontró la fecha'); return; }
-  S.fechaDate=date;
-  S.draftMatches=(day.matches||[]).map(m=>({id:m.id,home:m.home,away:m.away,kickoff:isoToLocalInput(m.kickoff)}));
-  S.importPreview=null;
-  toast('Editando '+prettyDate(date)); render();
-}
-function cancelEdit(){ S.draftMatches=[]; S.fechaDate=null; render(); }
-async function deleteFecha(date){
-  if(!confirm('¿Eliminar la fecha '+prettyDate(date)+'? Se borran sus partidos y los pronósticos de ese día.')) return;
-  await sdel(K.day(date));
-  let idx=(await sget(K.dayIndex))||[]; idx=idx.filter(x=>x!==date);
-  await sset(K.dayIndex,idx); S.dayIndex=idx;
-  const st=(await sget(K.standings))||{perDay:{},totals:{}};
-  if(st.perDay&&st.perDay[date]){ delete st.perDay[date]; recomputeTotals(st); await sset(K.standings,st); S.standings=st; }
-  for(const pl of S.config.players){ await sdel(K.pred(date,pl.id)); }
-  if(S.selDate===date) S.selDate=null;
-  if(S.fechaDate===date){ S.fechaDate=null; S.draftMatches=[]; }
-  toast('Fecha eliminada'); render();
-}
-
-function importBlockHTML(){
-  let preview='';
-  if(S.importPreview){
-    const bd=S.importPreview.byDate, dates=Object.keys(bd).sort();
-    const list=dates.map(d=>`<div class="listrow"><b class="osw" style="flex:1">${prettyDate(d)}</b><span class="pill">${bd[d].length} partido${bd[d].length!==1?'s':''}</span></div>`).join('');
-    preview=`<div class="divider"></div>
-      <div class="mini" style="margin-bottom:6px">Detecté <b style="color:var(--text)">${S.importPreview.count}</b> partido(s) en ${dates.length} fecha(s)${S.importPreview.skipped?` · ${S.importPreview.skipped} línea(s) omitida(s)`:''}:</div>
-      ${list}
-      <div class="grid2" style="margin-top:12px">
-        <button class="btn" onclick="commitImport()">Importar todo</button>
-        <button class="btn ghost" onclick="cancelImport()">Cancelar</button>
-      </div>`;
-  }
-  return `<div class="panel pad">
-    <div class="row" style="justify-content:space-between"><b class="osw">⚡ Importar calendario</b><span class="pill open">rápido</span></div>
-    <p class="mini" style="margin:8px 0 6px">Pega varios partidos de una vez (uno por línea), con este formato:</p>
-    <div class="code">AAAA-MM-DD | HH:MM | Local | Visita</div>
-    <p class="mini" style="margin:8px 0 6px">Ejemplo:</p>
-    <div class="code">2026-06-25 | 18:00 | Chile | Croacia
-2026-06-25 | 21:00 | Brasil | Suiza
-2026-06-26 | 16:00 | España | Japón</div>
-    <textarea class="input" id="imp_text" rows="6" placeholder="Pega aquí el calendario…" style="margin-top:10px;font-family:ui-monospace,monospace;font-size:13px">${esc(S.importDraft||'')}</textarea>
-    <button class="btn blue" style="margin-top:10px" onclick="previewImport()">Previsualizar</button>
-    ${preview}
-  </div>`;
-}
-function parseCalendar(raw){
-  const byDate={}; let count=0, skipped=0;
-  (raw||'').split('\n').forEach(line=>{
-    line=line.trim();
-    if(!line || line[0]==='#') return;
-    let date=null,time='',home=null,away=null;
-    const parts=line.split('|').map(s=>s.trim());
-    if(parts.length>=4){ date=parts[0]; time=parts[1]; home=parts[2]; away=parts[3]; }
-    else if(parts.length===3){ const dt=parts[0].split(/\s+/); date=dt[0]; time=dt[1]||''; home=parts[1]; away=parts[2]; }
-    else {
-      const m=line.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})\s+(.+?)\s+(?:vs|v|x|-)\s+(.+)$/i);
-      if(m){ date=m[1]; time=m[2]; home=m[3].trim(); away=m[4].trim(); }
-    }
-    if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!home||!away){ skipped++; return; }
-    let kickoff=null;
-    if(time && /^\d{1,2}:\d{2}$/.test(time)){
-      const [y,mo,d]=date.split('-').map(Number); const [hh,mm]=time.split(':').map(Number);
-      kickoff=new Date(y,mo-1,d,hh,mm).toISOString();
-    }
-    (byDate[date]=byDate[date]||[]).push({id:uid(),home,away,kickoff});
-    count++;
-  });
-  return {byDate,count,skipped};
-}
-function previewImport(){
-  S.importDraft=$('imp_text').value;
-  const res=parseCalendar(S.importDraft);
-  if(res.count===0) toast('No reconocí ningún partido. Revisa el formato.');
-  S.importPreview=res; render();
-}
-function cancelImport(){ S.importPreview=null; render(); }
-async function commitImport(){
-  const res=S.importPreview; if(!res||!res.count) return;
-  let idx=(await sget(K.dayIndex))||[]; let added=0;
-  for(const date of Object.keys(res.byDate)){
-    const existing=await sget(K.day(date));
-    const matches=existing?existing.matches.slice():[];
-    for(const m of res.byDate[date]){
-      const dup=matches.some(x=>x.home===m.home&&x.away===m.away&&x.kickoff===m.kickoff);
-      if(!dup){ matches.push(m); added++; }
-    }
-    await sset(K.day(date),{date,matches,results:existing?.results||{}});
-    if(!idx.includes(date)) idx.push(date);
-  }
-  idx.sort(); await sset(K.dayIndex,idx); S.dayIndex=idx;
-  S.importPreview=null; S.importDraft='';
-  toast(`Importados ${added} partido(s) ✓`);
-  S.adminTab='resultados'; S.selDate=Object.keys(res.byDate).sort()[0]; S.day=await sget(K.day(S.selDate)); render();
-}
-
-function addDraft(){ S.draftMatches.push({id:uid(),home:'',away:'',kickoff:''}); render(); }
-function rmDraft(i){ S.draftMatches.splice(i,1); render(); }
-function setDraft(i,k,v){ S.draftMatches[i][k]=v; }
-async function publishDay(){
-  const date=($('af_date')&&$('af_date').value)||S.fechaDate;
-  if(!date) return toast('Elige la fecha de la jornada');
-  const ms=S.draftMatches.filter(m=>m.home.trim()&&m.away.trim());
-  if(!ms.length) return toast('Agrega al menos un partido con equipos');
-  const normalized=ms.map(m=>({id:m.id||uid(),home:m.home.trim(),away:m.away.trim(),
-    kickoff:m.kickoff?new Date(m.kickoff).toISOString():null}));
-  const existing=await sget(K.day(date));
-  const keep=new Set(normalized.map(m=>m.id));
-  const results={};
-  if(existing&&existing.results){ for(const id in existing.results){ if(keep.has(id)) results[id]=existing.results[id]; } }
-  const ok=await sset(K.day(date),{date,matches:normalized,results});
-  if(!ok) return toast('No se pudo guardar');
-  let idx=(await sget(K.dayIndex))||[];
-  if(!idx.includes(date)){ idx.push(date); idx.sort(); await sset(K.dayIndex,idx); }
-  S.dayIndex=idx; S.draftMatches=[]; S.fechaDate=null;
-  await rescoreDay(date);
-  toast('Fecha guardada ✓');
-  S.adminTab='resultados'; S.selDate=date; S.day=await sget(K.day(date)); render();
-}
-
-/* --- Admin: ingresar resultados --- */
-function adminResultados(){
-  const idx=S.dayIndex;
-  if(!idx.length) return `<div class="panel pad empty">Aún no hay fechas. Crea una en “Nueva fecha”.</div>`;
-  const sel=S.selDate&&idx.includes(S.selDate)?S.selDate:idx[idx.length-1];
-  const opts=idx.map(d=>`<option value="${d}" ${d===sel?'selected':''}>${prettyDate(d)}</option>`).join('');
-  let inner='<div class="panel pad empty mini">Cargando…</div>';
-  // S.day debe estar cargado para 'sel'
-  if(S.day && S.day.date===sel){
-    const rows=S.day.matches.map(m=>{
-      const r=S.day.results?.[m.id]||{};
-      return `<div class="match">
-        <div class="teams">
-          <div class="team h">${esc(m.home)}</div>
-          <div class="score-in">
-            <input class="sin" data-rid="${m.id}" data-side="h" inputmode="numeric" maxlength="2" value="${r.h!=null?r.h:''}">
-            <span class="vs">-</span>
-            <input class="sin" data-rid="${m.id}" data-side="a" inputmode="numeric" maxlength="2" value="${r.a!=null?r.a:''}">
-          </div>
-          <div class="team a">${esc(m.away)}</div>
-        </div></div>`;
-    }).join('');
-    inner=`<div class="panel"><div class="ph"><span class="dot"></span><h2>${prettyDate(sel)}</h2></div>${rows}</div>
-      <button class="btn" style="margin-top:12px" onclick="saveResults('${sel}')">Guardar resultados y calcular ranking</button>
-      <div class="mini center" style="margin-top:8px">Deja en blanco los partidos que aún no terminan.</div>
-      <button class="btn ghost" style="margin-top:10px" onclick="shareConsolidado('${sel}')">📲 Compartir consolidado en WhatsApp</button>`;
-  }
-  return `<div class="row" style="margin-bottom:12px">
-      <select class="input" style="flex:1" onchange="adminPickResultDay(this.value)">${opts}</select>
-    </div>${inner}`;
-}
-async function adminPickResultDay(d){ S.selDate=d; S.day=await sget(K.day(d)); render(); }
-async function saveResults(date){
-  const day=await sget(K.day(date)); if(!day) return toast('Fecha no encontrada');
-  const inputs=document.querySelectorAll('.sin[data-rid]');
-  const byMatch={};
-  inputs.forEach(inp=>{
-    const mid=inp.dataset.rid,side=inp.dataset.side,v=inp.value.trim();
-    byMatch[mid]=byMatch[mid]||{};
-    byMatch[mid][side]=v===''?null:Math.max(0,Math.min(30,parseInt(v,10)||0));
-  });
-  const results={};
-  for(const mid in byMatch){
-    const h=byMatch[mid].h,a=byMatch[mid].a;
-    if(h!=null&&a!=null) results[mid]={h,a};
-  }
-  day.results=results;
-  const ok=await sset(K.day(date),day);
-  if(!ok) return toast('No se pudo guardar');
-  await rescoreDay(date);
-  S.day=day; toast('Resultados guardados y ranking actualizado ✓');
-  render();
-}
-async function rescoreDay(date){
-  const [day, cfg] = await Promise.all([ sget(K.day(date)), sget(K.config) ]);
-  if(!day || !cfg) return;
-  const preds = await Promise.all(cfg.players.map(pl=>sget(K.pred(date,pl.id))));
-  const perDay={};
-  cfg.players.forEach((pl,i)=>{
-    const pred=preds[i]; let total=0;
-    for(const m of day.matches){
-      const real=day.results?.[m.id];
-      if(real&&real.h!=null){ const sc=scoreOne(real,pred?.picks?.[m.id]); total+=(sc.p||0); }
-    }
-    perDay[pl.id]=total;
-  });
-  const st=(await sget(K.standings))||{perDay:{},totals:{}};
-  st.perDay[date]=perDay;
-  recomputeTotals(st);
-  await sset(K.standings,st);
-  S.standings=st;
-}
-function recomputeTotals(st){
-  const totals={}; const base=st.base||{};
-  for(const pid in base) totals[pid]=(totals[pid]||0)+(base[pid]||0);
-  for(const d in (st.perDay||{})) for(const pid in st.perDay[d]) totals[pid]=(totals[pid]||0)+(st.perDay[d][pid]||0);
-  st.totals=totals;
-}
-async function saveBasePoints(){
-  const st=(await sget(K.standings))||{perDay:{},totals:{}};
-  st.base=st.base||{};
-  document.querySelectorAll('.bp[data-pid]').forEach(inp=>{
-    st.base[inp.dataset.pid]=Math.max(0,parseInt(inp.value,10)||0);
-  });
-  recomputeTotals(st);
-  await sset(K.standings,st); S.standings=st;
-  toast('Puntos acumulados guardados ✓');
-}
-
-/* ============================================================
-   CONSOLIDADO PARA WHATSAPP
-   ============================================================ */
-async function buildConsolidado(date){
-  const day = await sget(K.day(date));
-  if(!day || !day.matches || !day.matches.length) return null;
-  const ids = S.config.players.map(p=>p.id);
-  const preds = await Promise.all(ids.map(id=>sget(K.pred(date,id))));
-  const predBy={}; ids.forEach((id,i)=>predBy[id]=preds[i]);
-
-  let out = `🏆 *POLLA MUNDIAL · LA BANDITA DE MACUL*\n📅 ${prettyDate(date)}\n`;
-
-  day.matches.forEach(m=>{
-    const real=day.results?.[m.id];
-    const hasReal=real&&real.h!=null;
-    const locked=isLocked(m);
-    if(!hasReal && !locked){
-      out += `\n⚽ *${m.home} vs ${m.away}* · 🔓 abierta (cierra ${fmtKO(m.kickoff)||'s/h'}) — apuestas ocultas\n`;
-      return;
-    }
-    out += `\n⚽ *${m.home} ${hasReal?`${real.h}-${real.a}`:'vs'} ${m.away}*${hasReal?' ✔️':' 🔒'}\n`;
-    S.config.players.forEach(p=>{
-      const pk=predBy[p.id]?.picks?.[m.id];
-      const pickStr=(pk&&pk.h!=null)?`${pk.h}-${pk.a}`:'—';
-      let pts='';
-      if(hasReal){ const sc=scoreOne(real,pk); pts=` ➜ ${sc.noBet?0:sc.p} pts`; }
-      out += `• ${p.name}: ${pickStr}${pts}\n`;
+  if(isAdmin && !m.a.tbd && !m.b.tbd){
+    const r = results[m.id]||{};
+    const bar = el('div','adminrow');
+    bar.innerHTML =
+      `<div class="sc"><input type="number" min="0" id="sa-${m.id}" value="${r.sa??''}" placeholder="–"></div>`+
+      `<button data-win="a">Gana ${m.a.n}</button>`+
+      `<button data-win="b">Gana ${m.b.n}</button>`+
+      `<div class="sc"><input type="number" min="0" id="sb-${m.id}" value="${r.sb??''}" placeholder="–"></div>`+
+      `<button class="clear" data-clear="1">✕</button>`;
+    bar.querySelectorAll('[data-win]').forEach(btn=>btn.onclick=()=>{
+      const sa=document.getElementById('sa-'+m.id).value, sb=document.getElementById('sb-'+m.id).value;
+      results[m.id]={win:btn.dataset.win, sa:sa===''?null:+sa, sb:sb===''?null:+sb};
+      saveResults(); render();
     });
+    bar.querySelector('[data-clear]').onclick=()=>{ delete results[m.id]; cascadeClear(m.id); saveResults(); render(); };
+    card.appendChild(bar);
+  }
+  return card;
+}
+
+// si se borra un resultado, limpia las rondas siguientes que dependían de él
+function cascadeClear(){ /* el árbol se recalcula solo en render(); los hijos quedan TBD y sus resultados viejos se ignoran */ }
+
+function renderRound(rdef){
+  const tree = buildTree();
+  const list = tree[rdef.key];
+  const v = document.getElementById('view');
+  v.innerHTML='';
+  const head = el('div','round-head',`<h2>${rdef.title}</h2><span class="when">${rdef.when}</span>`);
+  v.appendChild(head);
+  const wrap = el('div','matches');
+  list.forEach(m=>wrap.appendChild(matchCard(m, rdef.label)));
+  v.appendChild(wrap);
+}
+
+function miniMatch(m){
+  const r=results[m.id]||{};
+  const node=el('div','mini');
+  ['a','b'].forEach(side=>{
+    const t=m[side]; const won=r.win===side;
+    node.appendChild(el('div','t'+(won?' win':''),
+      `<span class="f">${t.f}</span><span class="n${t.tbd?' tbd':''}">${t.n}</span><span class="s">${(side==='a'?r.sa:r.sb)??''}</span>`));
   });
-
-  const st=(await sget(K.standings))||{totals:{}};
-  const rank=S.config.players.map(p=>({name:p.name,pts:(st.totals[p.id]||0)}))
-    .sort((a,b)=>b.pts-a.pts || a.name.localeCompare(b.name));
-  out += `\n🏅 *Ranking general:*\n`;
-  out += rank.map((x,i)=>{ const med=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`; return `${med} ${x.name}: ${x.pts} pts`; }).join('\n');
-  out += `\n\n_Generado por la app · Que gane el mejor 💪_`;
-  return out.trim();
-}
-async function shareConsolidado(date){
-  toast('Generando…');
-  const text=await buildConsolidado(date);
-  if(!text){ toast('No hay partidos para compartir'); return; }
-  if(navigator.share){
-    try{ await navigator.share({text}); return; }
-    catch(e){ if(e && e.name==='AbortError') return; }
-  }
-  openShareModal(text);
-}
-function openShareModal(text){
-  closeShareModal();
-  const ov=document.createElement('div'); ov.className='modal-ov'; ov.id='shareModal';
-  ov.innerHTML=`<div class="modal-card">
-    <div class="ph"><span class="dot"></span><h2>Consolidado para WhatsApp</h2></div>
-    <textarea id="shareText" readonly>${esc(text)}</textarea>
-    <div class="grid2" style="padding:12px;gap:8px">
-      <button class="btn" onclick="copyShare()">Copiar</button>
-      <button class="btn ghost" onclick="closeShareModal()">Cerrar</button>
-    </div>
-  </div>`;
-  ov.addEventListener('click',e=>{ if(e.target===ov) closeShareModal(); });
-  document.body.appendChild(ov);
-}
-function closeShareModal(){ const m=$('shareModal'); if(m) m.remove(); }
-async function copyShare(){
-  const ta=$('shareText'); if(!ta) return;
-  ta.select(); ta.setSelectionRange(0,99999);
-  try{ await navigator.clipboard.writeText(ta.value); toast('Copiado ✓ Pégalo en WhatsApp'); }
-  catch(e){ try{ document.execCommand('copy'); toast('Copiado ✓'); }catch(_){ toast('Mantén presionado el texto y copia'); } }
+  return node;
 }
 
-/* --- Admin: jugadores --- */
-function adminJugadores(){
-  const rows=S.config.players.map((p,i)=>`
-    <div class="listrow">
-      <input class="input" style="flex:1" value="${esc(p.name)}" onchange="renamePlayer('${p.id}',this.value)">
-      <span class="pill ${p.pin?'lock':'open'}">${p.pin?'PIN ✓':'sin PIN'}</span>
-      ${p.pin?`<button class="btn ghost sm" onclick="resetPin('${p.id}')">Reset PIN</button>`:''}
-    </div>`).join('');
-  return `<div class="panel pad">
-    <div class="mini" style="margin-bottom:8px">Jugadores: <b style="color:var(--text)">${S.config.players.length}</b> / 14</div>
-    ${rows}
-    ${S.config.players.length<14?`<button class="btn ghost" style="margin-top:12px" onclick="addPlayer()">+ Agregar jugador</button>`:''}
-  </div>
-  <div class="note" style="margin-top:12px">“Reset PIN” permite que un jugador vuelva a fijar su PIN (si lo olvidó). Tú no ves los PIN ni los pronósticos de los demás desde aquí.</div>`;
-}
-async function renamePlayer(id,name){
-  S.config=await sget(K.config);
-  const p=S.config.players.find(x=>x.id===id); if(!p) return;
-  p.name=name.trim()||p.name; await sset(K.config,S.config); toast('Nombre actualizado');
-}
-async function resetPin(id){
-  if(!confirm('¿Borrar el PIN de este jugador para que lo fije de nuevo?')) return;
-  S.config=await sget(K.config);
-  const p=S.config.players.find(x=>x.id===id); if(!p) return;
-  p.pin=null; await sset(K.config,S.config); toast('PIN reseteado'); render();
-}
-async function addPlayer(){
-  const name=prompt('Nombre del jugador:'); if(!name||!name.trim()) return;
-  S.config=await sget(K.config);
-  if(S.config.players.length>=14) return toast('Ya hay 14 jugadores');
-  S.config.players.push({id:uid(),name:name.trim(),pin:null});
-  await sset(K.config,S.config); toast('Jugador agregado'); render();
+function renderCuadro(){
+  const tree=buildTree();
+  const v=document.getElementById('view'); v.innerHTML='';
+  v.appendChild(el('p','hint','Desliza para ver todo el cuadro →'));
+  const scroll=el('div','cuadro-scroll'); const cuadro=el('div','cuadro');
+
+  const mkCol=(title,arr)=>{const c=el('div','col'); c.appendChild(el('h3',null,title)); arr.forEach(m=>c.appendChild(miniMatch(m))); return c;};
+
+  // mitad izquierda
+  cuadro.appendChild(mkCol('16avos', tree.r32.slice(0,8)));
+  cuadro.appendChild(mkCol('8vos',   tree.r16.slice(0,4)));
+  cuadro.appendChild(mkCol('4tos',   tree.qf.slice(0,2)));
+  cuadro.appendChild(mkCol('Semi',   tree.sf.slice(0,1)));
+
+  // centro: final + campeón
+  const champTeam = winnerTeam(tree.f[0]);
+  const center=el('div','col final-col');
+  center.appendChild(el('h3',null,'Final'));
+  center.appendChild(miniMatch(tree.f[0]));
+  const champ=el('div','champ');
+  champ.innerHTML=`<div class="cup">🏆</div><div class="lbl">Campeón</div><div class="who${champTeam?'':' tbd'}">${champTeam?champTeam.f+' '+champTeam.n:'Por definir'}</div>`;
+  center.appendChild(champ);
+  cuadro.appendChild(center);
+
+  // mitad derecha
+  cuadro.appendChild(mkCol('Semi',   tree.sf.slice(1,2)));
+  cuadro.appendChild(mkCol('4tos',   tree.qf.slice(2,4)));
+  cuadro.appendChild(mkCol('8vos',   tree.r16.slice(4,8)));
+  cuadro.appendChild(mkCol('16avos', tree.r32.slice(8,16)));
+
+  scroll.appendChild(cuadro); v.appendChild(scroll);
 }
 
-/* --- Admin: ajustes --- */
-function adminAjustes(){
-  const base=(S.standings&&S.standings.base)||{};
-  const bprows=S.config.players.map(p=>`
-    <div class="listrow">
-      <span class="osw" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.name)}</span>
-      <input class="sin bp" data-pid="${p.id}" style="width:64px;height:42px;font-size:18px" inputmode="numeric" maxlength="4" value="${base[p.id]!=null?base[p.id]:0}">
-    </div>`).join('');
-  return `<div class="panel pad">
-    <div class="row" style="justify-content:space-between"><b class="osw">📥 Cargar puntos acumulados</b><span class="pill open">inicial</span></div>
-    <p class="mini" style="margin:8px 0">Si ya venían jugando, ingresa el puntaje actual de cada uno. La app seguirá sumando sobre estos en cada fecha nueva.</p>
-    ${bprows}
-    <button class="btn" style="margin-top:12px" onclick="saveBasePoints()">Guardar puntos acumulados</button>
-    <div class="mini" style="margin-top:8px">Importante: estos son los puntos de los días <b>ya jugados</b>. No vuelvas a ingresar resultados de esos días en la app, o se sumarían dos veces.</div>
-  </div>
-  <div class="divider"></div>
-  <div class="panel pad">
-    <div class="field" style="margin-top:0">
-      <label>Cambiar PIN de administrador</label>
-      <input class="input" id="aj_pin" inputmode="numeric" maxlength="6" placeholder="Nuevo PIN (4-6 dígitos)">
-    </div>
-    <button class="btn blue" onclick="changeAdminPin()">Guardar nuevo PIN</button>
-    <div class="divider"></div>
-    <div class="mini">Enlace de la app: compártelo con los 14 amigos. Cada uno entra con su nombre y fija su PIN la primera vez.</div>
-    <div class="divider"></div>
-    <button class="btn danger" onclick="wipeAll()">Reiniciar TODO (borrar polla)</button>
-    <div class="mini" style="margin-top:6px">Borra jugadores, fechas, pronósticos y ranking. No se puede deshacer.</div>
-  </div>`;
-}
-async function changeAdminPin(){
-  const pin=$('aj_pin').value.trim();
-  if(!/^\d{4,6}$/.test(pin)) return toast('PIN inválido (4-6 dígitos)');
-  S.config=await sget(K.config); S.config.adminPin=pin; await sset(K.config,S.config);
-  toast('PIN de admin actualizado');
-}
-async function wipeAll(){
-  if(!confirm('Esto borra TODA la polla. ¿Seguro?')) return;
-  if(!confirm('Última confirmación: se perderán jugadores, fechas y ranking.')) return;
-  const idx=(await sget(K.dayIndex))||[];
-  for(const d of idx){
-    await sdel(K.day(d));
-    for(const pl of (S.config.players||[])){ await sdel(K.pred(d,pl.id)); }
-  }
-  await sdel(K.config);
-  await sdel(K.dayIndex);
-  await sdel(K.standings);
-  S=Object.assign(S,{config:null,me:null,isAdmin:false,dayIndex:[],selDate:null,day:null,screen:'setup'});
-  const n=document.querySelector('nav.tabs'); if(n) n.remove();
-  toast('Polla reiniciada'); render();
+function render(){
+  // tabs
+  const tabs=document.getElementById('tabs'); tabs.innerHTML='';
+  ROUNDS.forEach(r=>{
+    const b=el('button','tab',r.label);
+    b.setAttribute('role','tab'); b.setAttribute('aria-selected', current===r.key);
+    b.onclick=()=>{current=r.key; render();};
+    tabs.appendChild(b);
+  });
+  // view
+  if(current==='cuadro') renderCuadro();
+  else renderRound(ROUNDS.find(r=>r.key===current));
+  // progress
+  const decided = R32.filter(m=>results[m.id]&&results[m.id].win).length
+                + ['r16','qf','sf','f'].reduce((acc,k)=>acc + buildTree()[k].filter(m=>results[m.id]&&results[m.id].win).length,0);
+  document.getElementById('pct').textContent=decided;
+  document.getElementById('barfill').style.width=Math.round(decided/15*100)+'%';
+  // fase actual
+  const tree=buildTree();
+  const phase = tree.f[0] && winnerTeam(tree.f[0]) ? 'Campeón 🏆'
+    : tree.sf.some(m=>!m.a.tbd) ? 'Semifinales'
+    : tree.qf.some(m=>!m.a.tbd) ? 'Cuartos'
+    : tree.r16.some(m=>!m.a.tbd) ? 'Octavos' : '16avos';
+  document.getElementById('phase').textContent=phase;
 }
 
-/* ============================================================
-   BINDINGS POR PESTAÑA + RELOJ DE CUENTA REGRESIVA
-   ============================================================ */
-function bindByTab(){ /* listeners ya van inline */ }
+/* ---------- admin toggle ---------- */
+document.getElementById('adminToggle').onclick=function(){
+  if(isAdmin){ isAdmin=false; this.classList.remove('on'); this.textContent='🔒 Modo admin'; render(); return; }
+  const pin=prompt('PIN de admin para cargar resultados:');
+  if(pin===ADMIN_PIN){ isAdmin=true; this.classList.add('on'); this.textContent='🔓 Admin activo'; render(); }
+  else if(pin!=null){ alert('PIN incorrecto'); }
+};
 
-// actualiza textos de "Cierra en…" sin re-renderizar (no pisa lo que escribes)
-setInterval(()=>{
-  if(S.screen!=='app'||S.tab!=='partidos'||!S.day) return;
-  document.querySelectorAll('.pill.open').forEach(()=>{});
-  // refresco ligero: solo si hay countdowns visibles, re-render cada 30s
-},1000);
-let lastSoftRefresh=Date.now();
-setInterval(async ()=>{
-  if(S.screen!=='app') return;
-  // refresco suave del ranking
-  if(S.tab==='ranking'){ await loadStandings(); }
-  // en partidos: re-render solo si cambió el estado de lock de algún partido (para revelar)
-  if(S.tab==='partidos' && S.day){
-    const editingFocus=document.activeElement && document.activeElement.classList.contains('sin');
-    if(!editingFocus && Date.now()-lastSoftRefresh>20000){
-      lastSoftRefresh=Date.now(); await loadDayView();
-    }
-  }
-},8000);
+/* ---------- arranque ---------- */
+(async function(){ await loadResults(); render(); })();
 </script>
 </body>
 </html>
