@@ -713,51 +713,71 @@ function bTeam(name, score, won){
     `<span class="bn${tbd?' tbd':''}">${tbd?'Por definir':esc(teamES(name))}</span>`+
     `<span class="bs">${score!=null?score:''}</span></div>`;
 }
-function bMatch(m){
+/* resuelve "W74" -> nombre del ganador del partido 74 (recursivo) */
+function resolveName(raw, byNum){
+  const mm=/^W(\d+)$/i.exec((raw||'').trim());
+  if(mm && byNum && byNum[mm[1]]){
+    const f=byNum[mm[1]], w=koWinner(f);
+    if(w) return resolveName(w===1?f.team1:f.team2, byNum);
+  }
+  return raw;
+}
+function bMatch(m, byNum){
   const ft=m&&m.score&&m.score.ft;
   const played=ft&&ft.length>=2&&ft[0]!=null;
   const w=koWinner(m);
+  const n1=m?resolveName(m.team1,byNum):null;
+  const n2=m?resolveName(m.team2,byNum):null;
   const s1=played?ft[0]:null, s2=played?ft[1]:null;
   return `<div class="bmatch">`+
-    bTeam(m?m.team1:null, s1, w?w===1:null)+
-    bTeam(m?m.team2:null, s2, w?w===2:null)+
+    bTeam(n1, s1, w?w===1:null)+
+    bTeam(n2, s2, w?w===2:null)+
     `</div>`;
-}
-/* toma N partidos de una ronda (orden por nº de partido si existe), rellena con vacíos */
-function bSlots(list, n){
-  const arr=(list||[]).slice().sort((a,b)=>(a.num||0)-(b.num||0));
-  const out=[]; for(let i=0;i<n;i++) out.push(arr[i]||null); return out;
-}
-function bCol(title, slots, extra){
-  return `<div class="bcol${extra||''}"><h4>${title}</h4>${slots.map(bMatch).join('')}</div>`;
 }
 function knockoutHTML(){
   const by=computeKnockout(wcCache||{matches:[]});
-  const r32=bSlots(by['Round of 32'],16);
-  const r16=bSlots(by['Round of 16'],8);
-  const qf =bSlots(by['Quarter-final'],4);
-  const sf =bSlots(by['Semi-final'],2);
-  const fn =bSlots(by['Final'],1);
+  const KEY={'Round of 32':'r32','Round of 16':'r16','Quarter-final':'qf','Semi-final':'sf','Final':'f'};
+  const all=[].concat(by['Round of 32']||[],by['Round of 16']||[],by['Quarter-final']||[],by['Semi-final']||[],by['Final']||[]);
+  const byNum={}; all.forEach(m=>{ if(m.num!=null) byNum[m.num]=m; });
+
+  // Ordeno cada ronda siguiendo el árbol real (recorrido desde la Final por los enlaces W##)
+  const ord={r32:[],r16:[],qf:[],sf:[],f:[]};
+  const feeders=m=>{ const out=[]; [m.team1,m.team2].forEach(t=>{ const mm=/^W(\d+)$/i.exec((t||'').trim()); if(mm&&byNum[mm[1]]) out.push(byNum[mm[1]]); }); return out; };
+  const walk=m=>{ if(!m) return; const k=KEY[m.round]; if(k) ord[k].push(m); feeders(m).forEach(walk); };
+  const finalM=(by['Final']||[])[0]; if(finalM) walk(finalM);
+
+  // Si el árbol no se pudo armar, caigo a ordenar por nº de partido
+  const pick=(key, raw, n)=>{
+    const a=ord[key].length?ord[key]:(raw||[]).slice().sort((x,y)=>(x.num||0)-(y.num||0));
+    const out=[]; for(let i=0;i<n;i++) out.push(a[i]||null); return out;
+  };
+  const r32=pick('r32',by['Round of 32'],16);
+  const r16=pick('r16',by['Round of 16'],8);
+  const qf =pick('qf',by['Quarter-final'],4);
+  const sf =pick('sf',by['Semi-final'],2);
+  const fn =pick('f',by['Final'],1);
   const half=(a,lo,hi)=>a.slice(lo,hi);
+  const col=(title,slots,extra)=>`<div class="bcol${extra||''}"><h4>${title}</h4>${slots.map(m=>bMatch(m,byNum)).join('')}</div>`;
 
   // campeón
   const champW=koWinner(fn[0]);
-  const champ=champW?(champW===1?fn[0].team1:fn[0].team2):null;
+  const champRaw=champW?(champW===1?fn[0].team1:fn[0].team2):null;
+  const champ=champRaw?resolveName(champRaw,byNum):null;
   const champTbd=!champ||isTBD(champ);
   const champBox=`<div class="bchamp"><div class="cup">🏆</div><div class="lbl">Campeón</div>`+
     `<div class="who${champTbd?' tbd':''}">${champTbd?'Por definir':flagFor(champ)+' '+esc(teamES(champ))}</div></div>`;
 
   const left=
-    bCol('16avos', half(r32,0,8))+
-    bCol('8vos',   half(r16,0,4))+
-    bCol('4tos',   half(qf,0,2))+
-    bCol('Semi',   half(sf,0,1));
-  const center=`<div class="bcol cen"><h4>Final</h4>${bMatch(fn[0])}${champBox}</div>`;
+    col('16avos', half(r32,0,8))+
+    col('8vos',   half(r16,0,4))+
+    col('4tos',   half(qf,0,2))+
+    col('Semi',   half(sf,0,1));
+  const center=`<div class="bcol cen"><h4>Final</h4>${bMatch(fn[0],byNum)}${champBox}</div>`;
   const right=
-    bCol('Semi',   half(sf,1,2))+
-    bCol('4tos',   half(qf,2,4))+
-    bCol('8vos',   half(r16,4,8))+
-    bCol('16avos', half(r32,8,16));
+    col('Semi',   half(sf,1,2))+
+    col('4tos',   half(qf,2,4))+
+    col('8vos',   half(r16,4,8))+
+    col('16avos', half(r32,8,16));
 
   return `<p class="bkt-hint">Desliza para ver todo el cuadro ↔</p>`+
     `<div class="bkt-scroll"><div class="bkt">${left}${center}${right}</div></div>`;
